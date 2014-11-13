@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <script src="js/lib/angular.min.js"></script>
+    <script src="js/lib/jquery-1.11.1.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/opencin-sparql.js"></script>
+    <script src="js/index.js"></script>
+
+    <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lib/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="css/index.css" rel="stylesheet" />
+
+</head>
+
+<body>
+    <div ng-app="OpenCIn">
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">OpenCIn</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <div ng-controller="MenuCtrl">
+                        <ul class="nav navbar-nav">
+
+                            <li ng-repeat="item in currentMenu"><a href="">{{item}}</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Filtrar..." ng-model="listFilter">
+                        </div>
+                    </form>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+
+        <div ng-controller="MenuCtrl">
+        <ol class="breadcrumb">
+
+            <li ng-repeat="item in currentMenuStack"><a href="#">{{item.level}}</a></li>
+        </ol>
+            </div>
+
+
+
+
+
+        <div ng-controller="ListCtrl">
+            <ul>
+                <li ng-repeat="result in data | filter: listFilter" ng-click="click(result.queryValue, result.menuMatch)">{{result.title}} -> {{result.desc}}</li>
+            </ul>
+        </div>
+
+    </div>
+</body>
+
+</html>
