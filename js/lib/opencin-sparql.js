@@ -5,7 +5,7 @@ var prefixs = {
 }
 
 //@response_format -> json | xml | csv | html | javascript | ntriples | spreadsheet | rdf/xml
-function query (queryString, response_format, success_callback, error_callback) {
+function query(queryString, response_format, success_callback, error_callback) {
 	var prefixString = "";
 	for (prefix in prefixs){
 		prefixString += "PREFIX " + prefix + ": <"+prefixs[prefix]+"> \n";

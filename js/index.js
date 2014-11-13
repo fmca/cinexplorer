@@ -10,46 +10,56 @@ myApp.controller("ListCtrl",
         $scope.data = [
 
             {
-                title: "asdjhad",
-                desc: "asdhasd",
+                title: "Title",
+                desc: "Description",
                 type: "clickable",
-                queryValue: "acas@cin.ufpe.br",
-                menuMatch: "profile"
-            }, {
-                title: "ashdasdlas",
-                desc: "asdjhasdasd",
-                type: "clickable",
+                queryValue: "",
                 menuMatch: "academic"
-
             }];
 
 
-     var querySuccess = function (response) {
+     
+        $scope.click = function (queryValue, menuMatch) {
+		
+		$scope.querySuccess = function (response) {
             var json = JSON.parse(response);
             var results = (json.results.bindings);
+			console.log(results);
             var title = [], desc = [], type = [], queryValue = [], menuMatch = [];
             for(var i=0; i<results.length; i++){
-                title[i] = results[i].title;
-                desc[i] = results[i].desc;
-                queryValue[i] = results[i].queryValue;
+                title[i] = results[i].title.value;
+                desc[i] = results[i].desc.value;
+                queryValue[i] = results[i].queryValue.value
                 menuMatch[i] = "academic";
+				
+				$scope.data.push({"title": title[i], "desc": desc[i], "queryValue": queryValue[i], "menuMatch": menuMatch[i]});
+
+				
             }
+			$scope.$apply();
+			
+			
+			
+
 
 
         }
 
-          var queryFail = function (response){
+          $scope.queryFail = function (response){
             console.log("Query Fail");
         }
 
-        $scope.click = function (queryValue, menuMatch) {
-            var query = getQuery(menuMatch, $rootScope.tree);
-            var sparql = query.sparql;
+            var queryString = getQuery(menuMatch, $rootScope.tree);
+            var sparql = queryString.sparql;
             var sparql = sparql.replace("%%%", queryValue);
             console.log(sparql);
             $scope.data = [];
-
-            query(sparql, "json", querySuccess, queryFail);
+			
+            query(
+			sparql,
+			"json", 
+			$scope.querySuccess, 
+			$scope.queryFail);
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch);
         };
 
@@ -58,7 +68,7 @@ myApp.controller("ListCtrl",
 
 
         /*First menu is home*/
-        $rootScope.$emit("menuChangeEvent", "", "home");
+        $rootScope.$emit("menuChangeEvent", "", "academic");
 
     });
 
@@ -81,7 +91,7 @@ myApp.controller("MenuCtrl",
                 academic: {
                     title: "Docentes",
                     query: {
-                        sparql: "select ?teacher as ?title, ?email as ?desc, ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher } group by ?teacher order by ?teacher",
+                        sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
                         results: {
                             type: "clickable",
                             menuMatch: "profile"
@@ -131,10 +141,14 @@ myApp.controller("MenuCtrl",
             queryValue: ""
         }*/
         $scope.currentMenuStack = [];
+		
+		$scope.selected = "";
 
         ///////////////////////////////////////////////////////////////////
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
+			
+			
             $scope.currentMenuStack.push({
                 level: menuMatch,
                 queryValue: queryValue

@@ -1,6 +1,7 @@
 <html>
-
+ <div ng-app="OpenCIn">
 <head>
+	<meta charset="utf-8">
     <script src="js/lib/angular.min.js"></script>
     <script src="js/lib/jquery-1.11.1.min.js"></script>
     <script src="js/lib/bootstrap.min.js"></script>
@@ -14,7 +15,7 @@
 </head>
 
 <body>
-    <div ng-app="OpenCIn">
+   
 
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
@@ -34,7 +35,7 @@
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
-                            <li ng-repeat="item in currentMenu"><a href="">{{item}}</a>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item == selected}"><a href="">{{item}}</a>
                             </li>
 
                         </ul>
