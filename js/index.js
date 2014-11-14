@@ -5,6 +5,9 @@ myApp.controller('MainCtrl', ['$scope',
         $scope.text = "";
 }]);
 
+/******************************************************************************/
+/****************************ListCtrl******************************************/
+/******************************************************************************/
 myApp.controller("ListCtrl",
     function ($scope, $rootScope) {
         $scope.data = [
@@ -17,61 +20,73 @@ myApp.controller("ListCtrl",
                 menuMatch: "academic"
             }];
 
+        $rootScope.$on("requestList", function (event, queryValue, menu) {
+            $scope.querySuccess = function (response) {
+                var json = JSON.parse(response);
+                var results = (json.results.bindings);
 
-     
-        $scope.click = function (queryValue, menuMatch) {
-		
-		$scope.querySuccess = function (response) {
-            var json = JSON.parse(response);
-            var results = (json.results.bindings);
-			console.log(results);
-            var title = [], desc = [], type = [], queryValue = [], menuMatch = [];
-            for(var i=0; i<results.length; i++){
-                title[i] = results[i].title.value;
-                desc[i] = results[i].desc.value;
-                queryValue[i] = results[i].queryValue.value
-                menuMatch[i] = "academic";
-				
-				$scope.data.push({"title": title[i], "desc": desc[i], "queryValue": queryValue[i], "menuMatch": menuMatch[i]});
+                var title = [],
+                    desc = [],
+                    type = [],
+                    queryValue = [],
+                    menuMatch = [];
+                for (var i = 0; i < results.length; i++) {
+                    title[i] = results[i].title.value;
+                    desc[i] = results[i].desc.value;
+                    queryValue[i] = results[i].queryValue.value
+                    menuMatch[i] = menu;
 
-				
+                    $scope.data.push({
+                        "title": title[i],
+                        "desc": desc[i],
+                        "queryValue": queryValue[i],
+                        "menuMatch": menuMatch[i]
+                    });
+
+
+                }
+                $scope.$apply();
             }
-			$scope.$apply();
-			
-			
-			
 
+            $scope.queryFail = function (response) {
+                console.log("Query Fail");
+            }
 
+            $scope.data = [];
 
-        }
-
-          $scope.queryFail = function (response){
-            console.log("Query Fail");
-        }
-
-            var queryString = getQuery(menuMatch, $rootScope.tree);
+            var queryString = getQuery(menu, $rootScope.tree);
             var sparql = queryString.sparql;
             var sparql = sparql.replace("%%%", queryValue);
-            console.log(sparql);
-            $scope.data = [];
-			
+
+
             query(
-			sparql,
-			"json", 
-			$scope.querySuccess, 
-			$scope.queryFail);
+                sparql,
+                "json",
+                $scope.querySuccess,
+                $scope.queryFail);
+
+        });
+
+
+
+
+        $scope.click = function (queryValue, menuMatch) {
+
+            $rootScope.$emit("requestList", queryValue, menuMatch);
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch);
-        };
 
-
-
+        }
 
 
         /*First menu is home*/
-        $rootScope.$emit("menuChangeEvent", "", "academic");
+        $scope.click("", "home");
+
 
     });
 
+/******************************************************************************/
+/****************************MenuCtrl******************************************/
+/******************************************************************************/
 
 myApp.controller("MenuCtrl",
     function ($scope, $rootScope) {
@@ -82,7 +97,7 @@ myApp.controller("MenuCtrl",
             home: {
                 title: "Home",
                 query: {
-                    sparql: "",
+                    sparql: "select ?title ?desc where{ ?x cin:nothing ?title . ?x cin:nothing ?desc}",
                     results: {
                         type: "clickable",
                         menuMatch: "academic"
@@ -100,7 +115,7 @@ myApp.controller("MenuCtrl",
                     profile: {
                         title: "Perfil",
                         query: {
-                            sparql: "select ?nome ?desc where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . {{?x cin:office ?desc} UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} UNION {?x cin:email ?desc}} } group by ?nome",
+                            sparql: "select ?nome as ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . {{?x cin:office ?desc} UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} UNION {?x cin:email ?desc}} } group by ?nome",
                             results: {
                                 type: "none",
                                 menuMatch: "none"
@@ -109,25 +124,55 @@ myApp.controller("MenuCtrl",
                     },
                     publications: {
                         title: "Publicações",
-                        query: ""
+                        query: {
+                            sparql: "",
+                            results: {
+                                type: "none",
+                                menuMatch: "none"
+                            }
+                        }
                     },
                     projects: {
                         title: "Projetos",
-                        query: ""
+                        query: {
+                            sparql: "",
+                            results: {
+                                type: "none",
+                                menuMatch: "none"
+                            }
+                        }
                     },
                     positions: {
                         title: "Cargos",
-                        query: ""
+                        query: {
+                            sparql: "",
+                            results: {
+                                type: "none",
+                                menuMatch: "none"
+                            }
+                        }
                     }
                 },
                 expertiseAreas: {
                     title: "Áreas de Atuação",
-                    query: ""
+                    query: {
+                        sparql: "",
+                        results: {
+                            type: "none",
+                            menuMatch: "none"
+                        }
+                    }
 
                 },
                 interestAreas: {
                     title: "Áreas de Interesse",
-                    query: ""
+                    query: {
+                        sparql: "",
+                        results: {
+                            type: "none",
+                            menuMatch: "none"
+                        }
+                    }
                 }
             }
 
@@ -135,42 +180,61 @@ myApp.controller("MenuCtrl",
 
 
         /*Current menu handling*/
-        ////////////////////////////////////////////////////////////////////
         /*{
             level: "home",
             queryValue: ""
         }*/
         $scope.currentMenuStack = [];
-		
-		$scope.selected = "";
 
-        ///////////////////////////////////////////////////////////////////
+        $scope.selected = "";
+
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
-			
-			
+
+
             $scope.currentMenuStack.push({
                 level: menuMatch,
                 queryValue: queryValue
             });
-            console.log(last($scope.currentMenuStack).level);
 
             var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, $rootScope.tree)[0];
 
             $scope.currentMenu = [];
 
+            var changedSelected = false;
             for (var key in childMenu) {
                 if (key != "title" && key != "query") {
-                    $scope.currentMenu.push(key);
+                    if (!changedSelected) {
+                        changedSelected = true;
+                        $scope.selected = key;
+                    }
+                    $scope.currentMenu.push({
+                        name: key,
+                        queryValue: queryValue
+                    });
                 }
             }
 
-            console.log(getQuery("academic", $rootScope.tree));
         });
-        //////////////////////////////////////////////////////////////////
+
+
+        $scope.click = function (queryValue, menuName) {
+            $rootScope.$emit("requestList", queryValue, menuName);
+            $scope.selected = menuName;
+        }
+
+
+        $scope.click("", "academic");
+
 
 
     });
+
+
+/******************************************************************************/
+/****************************Other Functions***********************************/
+/******************************************************************************/
+
 
 function getQuery(key, obj) {
     for (var i in obj) {

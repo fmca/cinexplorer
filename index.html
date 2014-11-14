@@ -35,7 +35,7 @@
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item == selected}"><a href="">{{item}}</a>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected}" ng-click="click(item.queryValue, item.name)"><a href="">{{item.name}}</a>
                             </li>
 
                         </ul>
