@@ -64,7 +64,7 @@
 
         <div ng-controller="ListCtrl">
             <ul>
-                <li ng-repeat="result in data | filter: listFilter" ng-click="click(result.queryValue, result.menuMatch)">{{result.title}} -> {{result.desc}}</li>
+                <li ng-repeat="result in data | filter: listFilter" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)">{{result.title}} -> {{result.desc}}</li>
             </ul>
         </div>
 

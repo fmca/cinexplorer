@@ -15,7 +15,7 @@ myApp.controller("ListCtrl",
             {
                 title: "Title",
                 desc: "Description",
-                type: "clickable",
+                clickable: true,
                 queryValue: "",
                 menuMatch: "academic"
             }];
@@ -24,21 +24,26 @@ myApp.controller("ListCtrl",
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
                 var results = (json.results.bindings);
+                console.log(results);
 
                 var title = [],
                     desc = [],
-                    type = [],
+                    clickable = [],
                     queryValue = [],
                     menuMatch = [];
                 for (var i = 0; i < results.length; i++) {
                     title[i] = results[i].title.value;
                     desc[i] = results[i].desc.value;
-                    queryValue[i] = results[i].queryValue.value
+                    queryValue[i] = results[i].queryValue.value;
                     menuMatch[i] = menu;
+                    clickable[i] = getQuery(menu, $rootScope.tree).results.clickable;
+
+                    console.log(clickable[i]);
 
                     $scope.data.push({
                         "title": title[i],
                         "desc": desc[i],
+                        "clickable": clickable[i],
                         "queryValue": queryValue[i],
                         "menuMatch": menuMatch[i]
                     });
@@ -72,8 +77,9 @@ myApp.controller("ListCtrl",
 
         $scope.click = function (queryValue, menuMatch) {
 
-            $rootScope.$emit("requestList", queryValue, menuMatch);
+
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch);
+            $rootScope.$emit("requestList", queryValue, $rootScope.selected);
 
         }
 
@@ -99,7 +105,7 @@ myApp.controller("MenuCtrl",
                 query: {
                     sparql: "select ?title ?desc where{ ?x cin:nothing ?title . ?x cin:nothing ?desc}",
                     results: {
-                        type: "clickable",
+                        clickable: true,
                         menuMatch: "academic"
                     }
                 },
@@ -108,16 +114,16 @@ myApp.controller("MenuCtrl",
                     query: {
                         sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
                         results: {
-                            type: "clickable",
+                            clickable: true,
                             menuMatch: "profile"
                         }
                     },
                     profile: {
                         title: "Perfil",
                         query: {
-                            sparql: "select ?nome as ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . {{?x cin:office ?desc} UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} UNION {?x cin:email ?desc}} } group by ?nome",
+                            sparql: "select ?nome as ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email{?x cin:office ?desc} UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
                             results: {
-                                type: "none",
+                                clickable: false,
                                 menuMatch: "none"
                             }
                         }
@@ -127,7 +133,7 @@ myApp.controller("MenuCtrl",
                         query: {
                             sparql: "",
                             results: {
-                                type: "none",
+                                clickable: false,
                                 menuMatch: "none"
                             }
                         }
@@ -137,7 +143,7 @@ myApp.controller("MenuCtrl",
                         query: {
                             sparql: "",
                             results: {
-                                type: "none",
+                                clickable: false,
                                 menuMatch: "none"
                             }
                         }
@@ -147,7 +153,7 @@ myApp.controller("MenuCtrl",
                         query: {
                             sparql: "",
                             results: {
-                                type: "none",
+                                clickable: false,
                                 menuMatch: "none"
                             }
                         }
@@ -158,7 +164,7 @@ myApp.controller("MenuCtrl",
                     query: {
                         sparql: "",
                         results: {
-                            type: "none",
+                            clickable: false,
                             menuMatch: "none"
                         }
                     }
@@ -169,7 +175,7 @@ myApp.controller("MenuCtrl",
                     query: {
                         sparql: "",
                         results: {
-                            type: "none",
+                            clickable: false,
                             menuMatch: "none"
                         }
                     }
@@ -186,7 +192,7 @@ myApp.controller("MenuCtrl",
         }*/
         $scope.currentMenuStack = [];
 
-        $scope.selected = "";
+        $rootScope.selected = "";
 
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
@@ -206,7 +212,8 @@ myApp.controller("MenuCtrl",
                 if (key != "title" && key != "query") {
                     if (!changedSelected) {
                         changedSelected = true;
-                        $scope.selected = key;
+                        $rootScope.selected = key;
+                        console.log(key);
                     }
                     $scope.currentMenu.push({
                         name: key,
@@ -216,6 +223,8 @@ myApp.controller("MenuCtrl",
             }
 
         });
+
+
 
 
         $scope.click = function (queryValue, menuName) {
