@@ -131,7 +131,7 @@ myApp.controller("MenuCtrl",
                     publications: {
                         title: "Publicações",
                         query: {
-                            sparql: "",
+                            sparql: "select ?name as ?title ?type as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name",
                             results: {
                                 clickable: false,
                                 menuMatch: "none"
