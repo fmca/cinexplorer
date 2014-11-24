@@ -1,3 +1,8 @@
 body{
     padding-top: 70px;
 }
+
+.results{
+	margin-left: 1em;
+	width: auto;
+}
