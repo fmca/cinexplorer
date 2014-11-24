@@ -162,7 +162,7 @@ myApp.controller("MenuCtrl",
                 expertiseAreas: {
                     title: "Áreas de Atuação",
                     query: {
-                        sparql: "",
+                        sparql: "select ?eaname as ?title ?ea as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea",
                         results: {
                             clickable: false,
                             menuMatch: "none"
@@ -173,7 +173,7 @@ myApp.controller("MenuCtrl",
                 interestAreas: {
                     title: "Áreas de Interesse",
                     query: {
-                        sparql: "",
+                        sparql: "select ?ianame as ?title ?ia as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ia",
                         results: {
                             clickable: false,
                             menuMatch: "none"
