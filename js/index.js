@@ -38,8 +38,6 @@ myApp.controller("ListCtrl",
                     menuMatch[i] = menu;
                     clickable[i] = getQuery(menu, $rootScope.tree).results.clickable;
 
-                    console.log(clickable[i]);
-
                     $scope.data.push({
                         "title": title[i],
                         "desc": desc[i],
@@ -54,7 +52,15 @@ myApp.controller("ListCtrl",
             }
 
             $scope.queryFail = function (response) {
-                console.log("Query Fail");
+                console.log
+                $scope.data =[{
+                    "title": "Falha",
+                    "desc": "Não foi possível realizar a busca. Verifique se está conectado à rede do CIn",
+                    "clickable": false,
+                    "queryValue": "",
+                    "menuMatch": $rootScope.selected
+                }];
+                $scope.$apply();
             }
 
             $scope.data = [];
@@ -229,7 +235,21 @@ myApp.controller("MenuCtrl",
 
         $scope.click = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
-            $scope.selected = menuName;
+            $rootScope.selected = menuName;
+        }
+
+
+        $scope.back = function (itemStack) {
+            var cms = $scope.currentMenuStack;
+            for (var i = 0; i < cms.length; i++) {
+                if (cms[i].level == itemStack.level) {
+                    $scope.currentMenuStack = cms.slice(0, i);
+                    $scope.click(itemStack.queryValue, itemStack.level);
+
+                    $rootScope.$emit("menuChangeEvent", cms[i-1].queryValue, cms[i-1].level);
+                    break;
+                }
+            }
         }
 
 

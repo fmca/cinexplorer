@@ -1,21 +1,22 @@
 <html>
- <div ng-app="OpenCIn">
-<head>
-	<meta charset="utf-8">
-    <script src="js/lib/angular.min.js"></script>
-    <script src="js/lib/jquery-1.11.1.min.js"></script>
-    <script src="js/lib/bootstrap.min.js"></script>
-    <script src="js/lib/opencin-sparql.js"></script>
-    <script src="js/index.js"></script>
+<div ng-app="OpenCIn">
 
-    <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/lib/bootstrap-theme.min.css" rel="stylesheet" />
-    <link href="css/index.css" rel="stylesheet" />
+    <head>
+        <meta charset="utf-8">
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/jquery-1.11.1.min.js"></script>
+        <script src="js/lib/bootstrap.min.js"></script>
+        <script src="js/lib/opencin-sparql.js"></script>
+        <script src="js/index.js"></script>
 
-</head>
+        <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/lib/bootstrap-theme.min.css" rel="stylesheet" />
+        <link href="css/index.css" rel="stylesheet" />
 
-<body>
-   
+    </head>
+
+    <body>
+
 
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
@@ -27,7 +28,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">OpenCIn</a>
+                    <a class="navbar-brand" href="#">CInExplorer</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -52,11 +53,13 @@
         </nav>
 
         <div ng-controller="MenuCtrl">
-        <ol class="breadcrumb">
+            <ol class="breadcrumb">
 
-            <li ng-repeat="item in currentMenuStack"><a href="#">{{item.level}}</a></li>
-        </ol>
-            </div>
+                <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.level}}</a>
+                </li>
+                <li>{{selected}}</li>
+            </ol>
+        </div>
 
 
 
@@ -68,7 +71,7 @@
             </ul>
         </div>
 
-    </div>
+</div>
 </body>
 
 </html>
