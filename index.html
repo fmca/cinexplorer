@@ -29,7 +29,9 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">CInExplorer</a>
+					 <div ng-controller="MenuCtrl">
+                    <a class="navbar-brand" href="#" ng-click="reload()" >CInExplorer</a>
+					</div>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -37,7 +39,7 @@
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected}" ng-click="click(item.queryValue, item.name)"><a href="">{{item.name}}</a>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.name}}</a>
                             </li>
 
                         </ul>
@@ -56,6 +58,7 @@
         <div ng-controller="MenuCtrl">
             <ol class="breadcrumb">
 
+				<i class="fa fa-home"></i>
                 <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.level}}</a>
                 </li>
                 <li>{{selected}}</li>

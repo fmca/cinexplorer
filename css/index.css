@@ -6,3 +6,7 @@ body{
 	margin-left: 1em;
 	width: auto;
 }
+
+.panel {
+   cursor: pointer;
+}

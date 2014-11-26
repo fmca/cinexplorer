@@ -1,9 +1,5 @@
 var myApp = angular.module('OpenCIn', []);
 
-myApp.controller('MainCtrl', ['$scope',
-    function ($scope) {
-        $scope.text = "";
-}]);
 
 /******************************************************************************/
 /****************************ListCtrl******************************************/
@@ -110,15 +106,16 @@ myApp.controller("ListCtrl",
 /******************************************************************************/
 
 myApp.controller("MenuCtrl",
-    function ($scope, $rootScope) {
+    function ($scope, $rootScope, $window) {
 
         /*Static menu tree*/
 
         $rootScope.tree = {
             home: {
                 title: "Home",
+				icon: "fa-home",
                 query: {
-                    sparql: "select ?title ?desc where{ ?x cin:nothing ?title . ?x cin:nothing ?desc}",
+                    sparql: "",
                     results: {
                         clickable: true,
                         menuMatch: "academic"
@@ -126,6 +123,7 @@ myApp.controller("MenuCtrl",
                 },
                 academic: {
                     title: "Docentes",
+					icon: "fa-users",
                     query: {
                         sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
                         results: {
@@ -135,6 +133,7 @@ myApp.controller("MenuCtrl",
                     },
                     profile: {
                         title: "Perfil",
+						icon: "fa-user",
                         query: {
                             sparql: "select ?nome as ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email{?x cin:office ?desc} UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
                             results: {
@@ -145,6 +144,7 @@ myApp.controller("MenuCtrl",
                     },
                     publications: {
                         title: "Publicações",
+						icon: "fa-quote-right",
                         query: {
                             sparql: "select ?name as ?title ?type as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name",
                             results: {
@@ -155,6 +155,7 @@ myApp.controller("MenuCtrl",
                     },
                     projects: {
                         title: "Projetos",
+						icon: "fa-gears",
                         query: {
                             sparql: "",
                             results: {
@@ -165,6 +166,7 @@ myApp.controller("MenuCtrl",
                     },
                     positions: {
                         title: "Cargos",
+						icon: "fa-suitcase",
                         query: {
                             sparql: "",
                             results: {
@@ -176,6 +178,7 @@ myApp.controller("MenuCtrl",
                 },
                 expertiseAreas: {
                     title: "Áreas de Atuação",
+					icon: "fa-graduation-cap",
                     query: {
                         sparql: "select ?eaname as ?title ?ea as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea",
                         results: {
@@ -187,6 +190,7 @@ myApp.controller("MenuCtrl",
                 },
                 interestAreas: {
                     title: "Áreas de Interesse",
+					icon: "fa-heart",
                     query: {
                         sparql: "select ?ianame as ?title ?ia as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ia",
                         results: {
@@ -224,7 +228,7 @@ myApp.controller("MenuCtrl",
 
             var changedSelected = false;
             for (var key in childMenu) {
-                if (key != "title" && key != "query") {
+                if (key != "title" && key != "query" && key != "icon") {
                     if (!changedSelected) {
                         changedSelected = true;
                         $rootScope.selected = key;
@@ -232,7 +236,8 @@ myApp.controller("MenuCtrl",
                     }
                     $scope.currentMenu.push({
                         name: key,
-                        queryValue: queryValue
+                        queryValue: queryValue,
+						icon: getAttribute(key, "icon", $rootScope.tree)
                     });
                 }
             }
@@ -242,6 +247,9 @@ myApp.controller("MenuCtrl",
 
 
 
+		$scope.reload = function(){
+			$window.location.reload();
+		}
         $scope.click = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
             $rootScope.selected = menuName;
@@ -252,21 +260,18 @@ myApp.controller("MenuCtrl",
             var cms = $scope.currentMenuStack;
             for (var i = 0; i < cms.length; i++) {
                 if (cms[i].level == itemStack.level) {
-                    $scope.currentMenuStack = cms.slice(0, i);
-                    $scope.click(itemStack.queryValue, itemStack.level);
+					if(i!=0){
+						$scope.currentMenuStack = cms.slice(0, i-1);
+						$scope.click(itemStack.queryValue, itemStack.level);
 
-                    $rootScope.$emit("menuChangeEvent", cms[i-1].queryValue, cms[i-1].level);
+						$rootScope.$emit("menuChangeEvent", cms[i-1].queryValue, cms[i-1].level);
+					}else{
+						$scope.reload();
+					}
                     break;
                 }
             }
         }
-
-
-        $scope.click("", "academic");
-		
-		
-		
-
 
 
     });
@@ -276,19 +281,26 @@ myApp.controller("MenuCtrl",
 /****************************Other Functions***********************************/
 /******************************************************************************/
 
-
-function getQuery(key, obj) {
-    for (var i in obj) {
+function getAttribute(level, attribute, obj){
+	for (var i in obj) {
         if (!obj.hasOwnProperty(i)) continue;
         if (typeof obj[i] == 'object') {
 
         }
-        if (i == key) {
-            return (obj[i])[0].query;
+        if (i == level) {
+            return ((obj[i])[0])[attribute];
         } else {
-            return (getChildMenuKeys(key, obj[i]))[0].query;
+			var t = (getChildMenuKeys(level, obj[i]))[0];
+            return t[attribute];
         }
     }
+}
+function getQuery(key, obj) {
+   
+   var attr = getAttribute(key, "query", obj);
+   
+   return attr;
+
 }
 
 function getChildMenuKeys(key, obj) {
