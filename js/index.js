@@ -21,6 +21,9 @@ myApp.controller("ListCtrl",
             }];
 
         $rootScope.$on("requestList", function (event, queryValue, menu) {
+		
+			$rootScope.listLoaded = false;
+		
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
                 var results = (json.results.bindings);
@@ -48,11 +51,14 @@ myApp.controller("ListCtrl",
 
 
                 }
+				
+				$rootScope.listLoaded = true;
+				
                 $scope.$apply();
             }
 
             $scope.queryFail = function (response) {
-                console.log
+			
                 $scope.data =[{
                     "title": "Falha",
                     "desc": "Não foi possível realizar a busca. Verifique se está conectado à rede do CIn",
@@ -60,6 +66,9 @@ myApp.controller("ListCtrl",
                     "queryValue": "",
                     "menuMatch": $rootScope.selected
                 }];
+				
+				$rootScope.listLoaded = true;
+				
                 $scope.$apply();
             }
 
@@ -254,6 +263,9 @@ myApp.controller("MenuCtrl",
 
 
         $scope.click("", "academic");
+		
+		
+		
 
 
 

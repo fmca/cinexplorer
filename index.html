@@ -11,6 +11,7 @@
 
         <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
         <link href="css/lib/bootstrap-theme.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/lib/font-awesome.min.css">
         <link href="css/index.css" rel="stylesheet" />
 
     </head>
@@ -58,6 +59,7 @@
                 <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.level}}</a>
                 </li>
                 <li>{{selected}}</li>
+				<i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i>
             </ol>
         </div>
 
@@ -66,7 +68,8 @@
 
 
         <div ng-controller="ListCtrl">
-			<div ng-repeat="result in data | filter: listFilter" class="panel panel-default results">
+		
+			<div ng-show="listLoaded" ng-repeat="result in data | filter: listFilter" class="panel panel-default results">
 			  <div class="panel-heading" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)">
 				{{result.title}}
 			  </div>
