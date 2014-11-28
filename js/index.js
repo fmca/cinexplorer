@@ -17,9 +17,9 @@ myApp.controller("ListCtrl",
             }];
 
         $rootScope.$on("requestList", function (event, queryValue, menu) {
-		
-			$rootScope.listLoaded = false;
-		
+
+            $rootScope.listLoaded = false;
+
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
                 var results = (json.results.bindings);
@@ -47,24 +47,24 @@ myApp.controller("ListCtrl",
 
 
                 }
-				
-				$rootScope.listLoaded = true;
-				
+
+                $rootScope.listLoaded = true;
+
                 $scope.$apply();
             }
 
             $scope.queryFail = function (response) {
-			
-                $scope.data =[{
+
+                $scope.data = [{
                     "title": "Falha",
                     "desc": "Não foi possível realizar a busca. Verifique se está conectado à rede do CIn",
                     "clickable": false,
                     "queryValue": "",
                     "menuMatch": $rootScope.selected
                 }];
-				
-				$rootScope.listLoaded = true;
-				
+
+                $rootScope.listLoaded = true;
+
                 $scope.$apply();
             }
 
@@ -113,7 +113,7 @@ myApp.controller("MenuCtrl",
         $rootScope.tree = {
             home: {
                 title: "Home",
-				icon: "fa-home",
+                icon: "fa-home",
                 query: {
                     sparql: "",
                     results: {
@@ -123,7 +123,7 @@ myApp.controller("MenuCtrl",
                 },
                 academic: {
                     title: "Docentes",
-					icon: "fa-users",
+                    icon: "fa-users",
                     query: {
                         sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
                         results: {
@@ -133,9 +133,9 @@ myApp.controller("MenuCtrl",
                     },
                     profile: {
                         title: "Perfil",
-						icon: "fa-user",
+                        icon: "fa-user",
                         query: {
-                            sparql: "select ?nome as ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email{?x cin:office ?desc} UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
+                            sparql: "select ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email . ?x ?title ?desc . {?x cin:office ?desc } UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
                             results: {
                                 clickable: false,
                                 menuMatch: "none"
@@ -144,9 +144,9 @@ myApp.controller("MenuCtrl",
                     },
                     publications: {
                         title: "Publicações",
-						icon: "fa-quote-right",
+                        icon: "fa-quote-right",
                         query: {
-                            sparql: "select ?name as ?title ?type as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name",
+                            sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
                             results: {
                                 clickable: false,
                                 menuMatch: "none"
@@ -155,7 +155,7 @@ myApp.controller("MenuCtrl",
                     },
                     projects: {
                         title: "Projetos",
-						icon: "fa-gears",
+                        icon: "fa-gears",
                         query: {
                             sparql: "",
                             results: {
@@ -166,7 +166,7 @@ myApp.controller("MenuCtrl",
                     },
                     positions: {
                         title: "Cargos",
-						icon: "fa-suitcase",
+                        icon: "fa-suitcase",
                         query: {
                             sparql: "",
                             results: {
@@ -178,9 +178,9 @@ myApp.controller("MenuCtrl",
                 },
                 expertiseAreas: {
                     title: "Áreas de Atuação",
-					icon: "fa-graduation-cap",
+                    icon: "fa-graduation-cap",
                     query: {
-                        sparql: "select ?eaname as ?title ?ea as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea",
+                        sparql: "select ?ea as ?title ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
                         results: {
                             clickable: false,
                             menuMatch: "none"
@@ -190,9 +190,9 @@ myApp.controller("MenuCtrl",
                 },
                 interestAreas: {
                     title: "Áreas de Interesse",
-					icon: "fa-heart",
+                    icon: "fa-heart",
                     query: {
-                        sparql: "select ?ianame as ?title ?ia as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ia",
+                        sparql: "select ?ia as ?title ?ianame as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
                         results: {
                             clickable: false,
                             menuMatch: "none"
@@ -216,11 +216,16 @@ myApp.controller("MenuCtrl",
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
 
+            var lFilter = $rootScope.listFilter;
 
             $scope.currentMenuStack.push({
                 level: menuMatch,
-                queryValue: queryValue
+                queryValue: queryValue,
+                filter: lFilter
             });
+
+            $rootScope.listFilter = "";
+            console.log($scope.currentMenuStack);
 
             var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, $rootScope.tree)[0];
 
@@ -232,12 +237,12 @@ myApp.controller("MenuCtrl",
                     if (!changedSelected) {
                         changedSelected = true;
                         $rootScope.selected = key;
-                        console.log(key);
                     }
                     $scope.currentMenu.push({
                         name: key,
                         queryValue: queryValue,
-						icon: getAttribute(key, "icon", $rootScope.tree)
+                        title: getAttribute(key, "title", $rootScope.tree),
+                        icon: getAttribute(key, "icon", $rootScope.tree)
                     });
                 }
             }
@@ -247,9 +252,9 @@ myApp.controller("MenuCtrl",
 
 
 
-		$scope.reload = function(){
-			$window.location.reload();
-		}
+        $scope.reload = function () {
+            $window.location.reload();
+        }
         $scope.click = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
             $rootScope.selected = menuName;
@@ -258,16 +263,19 @@ myApp.controller("MenuCtrl",
 
         $scope.back = function (itemStack) {
             var cms = $scope.currentMenuStack;
+            console.log(cms);
             for (var i = 0; i < cms.length; i++) {
                 if (cms[i].level == itemStack.level) {
-					if(i!=0){
-						$scope.currentMenuStack = cms.slice(0, i-1);
-						$scope.click(itemStack.queryValue, itemStack.level);
+                    if (i != 0) {
+                        $scope.currentMenuStack = cms.slice(0, i - 1);
+                        $scope.click(itemStack.queryValue, itemStack.level);
+                        console.log(itemStack.filter);
+                        $rootScope.listFilter = itemStack.filter;
 
-						$rootScope.$emit("menuChangeEvent", cms[i-1].queryValue, cms[i-1].level);
-					}else{
-						$scope.reload();
-					}
+                        $rootScope.$broadcast("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level);
+                    } else {
+                        $scope.reload();
+                    }
                     break;
                 }
             }
@@ -281,8 +289,8 @@ myApp.controller("MenuCtrl",
 /****************************Other Functions***********************************/
 /******************************************************************************/
 
-function getAttribute(level, attribute, obj){
-	for (var i in obj) {
+function getAttribute(level, attribute, obj) {
+    for (var i in obj) {
         if (!obj.hasOwnProperty(i)) continue;
         if (typeof obj[i] == 'object') {
 
@@ -290,16 +298,17 @@ function getAttribute(level, attribute, obj){
         if (i == level) {
             return ((obj[i])[0])[attribute];
         } else {
-			var t = (getChildMenuKeys(level, obj[i]))[0];
+            var t = (getChildMenuKeys(level, obj[i]))[0];
             return t[attribute];
         }
     }
 }
+
 function getQuery(key, obj) {
-   
-   var attr = getAttribute(key, "query", obj);
-   
-   return attr;
+
+    var attr = getAttribute(key, "query", obj);
+
+    return attr;
 
 }
 

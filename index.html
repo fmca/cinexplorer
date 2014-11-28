@@ -10,8 +10,8 @@
         <script src="js/index.js"></script>
 
         <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
-        <link href="css/lib/bootstrap-theme.min.css" rel="stylesheet" />
-		<link rel="stylesheet" href="css/lib/font-awesome.min.css">
+
+        <link rel="stylesheet" href="css/lib/font-awesome.min.css">
         <link href="css/index.css" rel="stylesheet" />
 
     </head>
@@ -29,9 +29,9 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-					 <div ng-controller="MenuCtrl">
-                    <a class="navbar-brand" href="#" ng-click="reload()" >CInExplorer</a>
-					</div>
+                    <div ng-controller="MenuCtrl">
+                        <a class="navbar-brand" href="#" ng-click="reload()">CInExplorer</a>
+                    </div>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -39,7 +39,7 @@
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.name}}</a>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
                             </li>
 
                         </ul>
@@ -58,11 +58,11 @@
         <div ng-controller="MenuCtrl">
             <ol class="breadcrumb">
 
-				<i class="fa fa-home"></i>
+                <i class="fa fa-home"></i>
                 <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.level}}</a>
                 </li>
                 <li>{{selected}}</li>
-				<i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i>
+                <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i>
             </ol>
         </div>
 
@@ -71,13 +71,16 @@
 
 
         <div ng-controller="ListCtrl">
-		
-			<div ng-show="listLoaded" ng-repeat="result in data | filter: listFilter" class="panel panel-default results">
-			  <div class="panel-heading" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)">
-				{{result.title}}
-			  </div>
-			  <div class="panel-body">{{result.desc}}</div>
-			</div>
+
+            <div>
+
+                <div ng-show="listLoaded" ng-repeat="result in data | filter: listFilter" ng-class="{clickable: result.clickable}" class="panel panel-default results" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)">
+                    <div class="panel-heading">
+                        {{result.title}}
+                    </div>
+                    <div class="panel-body">{{result.desc}}</div>
+                </div>
+            </div>
         </div>
 
 </div>

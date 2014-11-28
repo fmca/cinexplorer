@@ -1,12 +1,17 @@
 body{
-    padding-top: 70px;
+    padding-top: 75px;
+    margin-left: 1em;
+	margin-right: 1em;
 }
 
 .results{
-	margin-left: 1em;
-	width: auto;
+
 }
 
-.panel {
+.listFilter{
+    width: 50em;
+}
+
+.clickable {
    cursor: pointer;
 }
