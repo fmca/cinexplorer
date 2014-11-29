@@ -39,14 +39,14 @@
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
                             </li>
 
                         </ul>
                     </div>
                     <form class="navbar-form navbar-left" role="search">
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Filtrar..." ng-model="listFilter">
+                            <input type="text" class="form-control" placeholder="Filtrar..." ng-model="listFilter" ng-focus="">
                         </div>
                     </form>
                 </div>
@@ -59,9 +59,9 @@
             <ol class="breadcrumb">
 
                 <i class="fa fa-home"></i>
-                <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.level}}</a>
+                <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.title}}</a>
                 </li>
-                <li>{{selected}}</li>
+                <li>{{selected.title}}</li>
                 <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i>
             </ol>
         </div>
@@ -78,7 +78,8 @@
                     <div class="panel-heading">
                         {{result.title}}
                     </div>
-                    <div class="panel-body">{{result.desc}}</div>
+                    <div class="panel-body">{{result.desc}}
+                    </div>
                 </div>
             </div>
         </div>

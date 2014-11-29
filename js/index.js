@@ -60,7 +60,7 @@ myApp.controller("ListCtrl",
                     "desc": "Não foi possível realizar a busca. Verifique se está conectado à rede do CIn",
                     "clickable": false,
                     "queryValue": "",
-                    "menuMatch": $rootScope.selected
+                    "menuMatch": $rootScope.selected.name
                 }];
 
                 $rootScope.listLoaded = true;
@@ -90,7 +90,7 @@ myApp.controller("ListCtrl",
 
 
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch);
-            $rootScope.$emit("requestList", queryValue, $rootScope.selected);
+            $rootScope.$emit("requestList", queryValue, $rootScope.selected.name);
 
         }
 
@@ -112,7 +112,7 @@ myApp.controller("MenuCtrl",
 
         $rootScope.tree = {
             home: {
-                title: "Home",
+                title: "Início",
                 icon: "fa-home",
                 query: {
                     sparql: "",
@@ -211,7 +211,7 @@ myApp.controller("MenuCtrl",
         }*/
         $scope.currentMenuStack = [];
 
-        $rootScope.selected = "";
+        $rootScope.selected = {};
 
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
@@ -220,11 +220,13 @@ myApp.controller("MenuCtrl",
 
             $scope.currentMenuStack.push({
                 level: menuMatch,
+                title: getAttribute(menuMatch, "title", $rootScope.tree),
                 queryValue: queryValue,
                 filter: lFilter
             });
 
             $rootScope.listFilter = "";
+            console.log("menuEvent");
             console.log($scope.currentMenuStack);
 
             var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, $rootScope.tree)[0];
@@ -236,7 +238,8 @@ myApp.controller("MenuCtrl",
                 if (key != "title" && key != "query" && key != "icon") {
                     if (!changedSelected) {
                         changedSelected = true;
-                        $rootScope.selected = key;
+                        $rootScope.selected.name = key;
+                        $rootScope.selected.title = getAttribute(key, "title", $rootScope.tree);
                     }
                     $scope.currentMenu.push({
                         name: key,
@@ -257,7 +260,10 @@ myApp.controller("MenuCtrl",
         }
         $scope.click = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
-            $rootScope.selected = menuName;
+            $rootScope.selected = {
+                name: menuName,
+                title: getAttribute(menuName, "title", $rootScope.tree)
+            }
         }
 
 
@@ -270,9 +276,10 @@ myApp.controller("MenuCtrl",
                         $scope.currentMenuStack = cms.slice(0, i - 1);
                         $scope.click(itemStack.queryValue, itemStack.level);
                         console.log(itemStack.filter);
-                        $rootScope.listFilter = itemStack.filter;
+                        $scope.listFilter = itemStack.filter;
 
-                        $rootScope.$broadcast("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level);
+                        $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level);
+                        break;
                     } else {
                         $scope.reload();
                     }
@@ -289,7 +296,9 @@ myApp.controller("MenuCtrl",
 /****************************Other Functions***********************************/
 /******************************************************************************/
 
+
 function getAttribute(level, attribute, obj) {
+    if (level == "home") return "Home";
     for (var i in obj) {
         if (!obj.hasOwnProperty(i)) continue;
         if (typeof obj[i] == 'object') {
