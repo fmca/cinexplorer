@@ -1,7 +1,3 @@
-var myApp = angular.module('OpenCIn', ['ngCookies']);
-
-
-
 myApp.constant("menuTree", {
     home: {
         title: {

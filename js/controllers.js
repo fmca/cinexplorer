@@ -1,5 +1,5 @@
 myApp.controller("LanguageCtrl",
-    function ($scope, $rootScope, $cookieStore, menuTree) {
+    function ($scope, $rootScope, $cookieStore, strings) {
 
         $scope.changeLanguage = function (languageAbbreviation) {
 
@@ -33,12 +33,7 @@ myApp.controller("LanguageCtrl",
         }
 
         /*Strings */
-        $scope.strings = {
-            filter: {
-                en_US: "Filter..",
-                pt_BR: "Filtrar..."
-            }
-        }
+        $scope.strings = strings;
 
         $rootScope.getString = function (string) {
             for (var str in $scope.strings) {
