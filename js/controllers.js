@@ -1,134 +1,9 @@
-var myApp = angular.module('OpenCIn', ['ngCookies']);
-
-
-
 myApp.controller("LanguageCtrl",
-    function ($scope, $rootScope, $cookieStore) {
-
-        /*Static menu tree*/
-
-        $rootScope.tree = {
-            home: {
-                title: {
-                    en_US: "Home",
-                    pt_BR: "Início"
-                },
-                icon: "fa-home",
-                query: {
-                    sparql: "",
-                    results: {
-                        clickable: true,
-                        menuMatch: "academic"
-                    }
-                },
-                academic: {
-                    title: {
-                        en_US: "Teachers",
-                        pt_BR: "Docentes"
-                    },
-                    icon: "fa-users",
-                    query: {
-                        sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
-                        results: {
-                            clickable: true,
-                            menuMatch: "profile"
-                        }
-                    },
-                    profile: {
-                        title: {
-                            en_US: "Profile",
-                            pt_BR: "Perfil"
-                        },
-                        icon: "fa-user",
-                        query: {
-                            sparql: "select ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email . ?x ?title ?desc . {?x cin:office ?desc } UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    },
-                    publications: {
-                        title: {
-                            en_US: "Publications",
-                            pt_BR: "Publicações"
-                        },
-                        icon: "fa-quote-right",
-                        query: {
-                            sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    },
-                    projects: {
-                        title: {
-                            en_US: "Projects",
-                            pt_BR: "Projetos"
-                        },
-                        icon: "fa-gears",
-                        query: {
-                            sparql: "",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    },
-                    positions: {
-                        title: {
-                            en_US: "Positions",
-                            pt_BR: "Cargos"
-                        },
-                        icon: "fa-suitcase",
-                        query: {
-                            sparql: "",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    }
-                },
-                expertiseAreas: {
-                    title: {
-                        en_US: "Expertise Areas",
-                        pt_BR: "Áreas de Atuação"
-                    },
-                    icon: "fa-graduation-cap",
-                    query: {
-                        sparql: "select ?ea as ?title ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
-                        results: {
-                            clickable: false,
-                            menuMatch: "none"
-                        }
-                    }
-
-                },
-                interestAreas: {
-                    title: {
-                        en_US: "Interest Areas",
-                        pt_BR: "Áreas de Interesse"
-                    },
-                    icon: "fa-heart",
-                    query: {
-                        sparql: "select ?ia as ?title ?ianame as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
-                        results: {
-                            clickable: false,
-                            menuMatch: "none"
-                        }
-                    }
-                }
-            }
-
-        };
+    function ($scope, $rootScope, $cookieStore, menuTree) {
 
         $scope.changeLanguage = function (languageAbbreviation) {
 
             angular.forEach($rootScope.languages, function (element, index) {
-                console.log(element);
-                console.log(index);
                 if (element.abbreviation == languageAbbreviation) {
                     $rootScope.lang = element;
                     $cookieStore.put("language", $rootScope.lang);
@@ -141,11 +16,13 @@ myApp.controller("LanguageCtrl",
 
         $rootScope.languages = [{
             abbreviation: "pt_BR",
-            title: "Português"
+            title: "Portuguese"
         }, {
             abbreviation: "en_US",
             title: "English"
-        }]
+        }];
+
+
 
         $rootScope.lang = $cookieStore.get("language");
         if (!$rootScope.lang) {
@@ -153,6 +30,22 @@ myApp.controller("LanguageCtrl",
                 $rootScope.lang = element;
                 return;
             });
+        }
+
+        /*Strings */
+        $scope.strings = {
+            filter: {
+                en_US: "Filter..",
+                pt_BR: "Filtrar..."
+            }
+        }
+
+        $rootScope.getString = function (string) {
+            for (var str in $scope.strings) {
+                if (str == string) {
+                    return (($scope.strings)[str])[$rootScope.lang.abbreviation];
+                }
+            }
         }
 
 
@@ -164,7 +57,7 @@ myApp.controller("LanguageCtrl",
 /****************************ListCtrl******************************************/
 /******************************************************************************/
 myApp.controller("ListCtrl",
-    function ($scope, $rootScope) {
+    function ($scope, $rootScope, menuTree) {
         $scope.data = [
 
             {
@@ -182,7 +75,6 @@ myApp.controller("ListCtrl",
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
                 var results = (json.results.bindings);
-                console.log(results);
 
                 var title = [],
                     desc = [],
@@ -194,7 +86,7 @@ myApp.controller("ListCtrl",
                     desc[i] = results[i].desc.value;
                     queryValue[i] = results[i].queryValue.value;
                     menuMatch[i] = menu;
-                    clickable[i] = getQuery(menu, $rootScope.tree).results.clickable;
+                    clickable[i] = getQuery(menu, menuTree).results.clickable;
 
                     $scope.data.push({
                         "title": title[i],
@@ -229,7 +121,7 @@ myApp.controller("ListCtrl",
 
             $scope.data = [];
 
-            var queryString = getQuery(menu, $rootScope.tree);
+            var queryString = getQuery(menu, menuTree);
             var sparql = queryString.sparql;
             var sparql = sparql.replace("%%%", queryValue);
 
@@ -265,7 +157,7 @@ myApp.controller("ListCtrl",
 /******************************************************************************/
 
 myApp.controller("MenuCtrl",
-    function ($scope, $rootScope, $window) {
+    function ($scope, $rootScope, $window, menuTree) {
 
 
 
@@ -286,16 +178,14 @@ myApp.controller("MenuCtrl",
 
             $scope.currentMenuStack.push({
                 level: menuMatch,
-                title: getAttribute(menuMatch, "title", $rootScope.tree)[$rootScope.lang.abbreviation],
+                title: getAttribute(menuMatch, "title", menuTree)[$rootScope.lang.abbreviation],
                 queryValue: queryValue,
                 filter: lFilter
             });
 
             $rootScope.listFilter = "";
-            console.log("menuEvent");
-            console.log($scope.currentMenuStack);
 
-            var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, $rootScope.tree)[0];
+            var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, menuTree)[0];
 
             $scope.currentMenu = [];
 
@@ -305,13 +195,13 @@ myApp.controller("MenuCtrl",
                     if (!changedSelected) {
                         changedSelected = true;
                         $rootScope.selected.name = key;
-                        $rootScope.selected.title = getAttribute(key, "title", $rootScope.tree)[$rootScope.lang.abbreviation];
+                        $rootScope.selected.title = getAttribute(key, "title", menuTree)[$rootScope.lang.abbreviation];
                     }
                     $scope.currentMenu.push({
                         name: key,
                         queryValue: queryValue,
-                        title: getAttribute(key, "title", $rootScope.tree)[$rootScope.lang.abbreviation],
-                        icon: getAttribute(key, "icon", $rootScope.tree)
+                        title: getAttribute(key, "title", menuTree)[$rootScope.lang.abbreviation],
+                        icon: getAttribute(key, "icon", menuTree)
                     });
                 }
             }
@@ -328,7 +218,7 @@ myApp.controller("MenuCtrl",
             $rootScope.$emit("requestList", queryValue, menuName);
             $rootScope.selected = {
                 name: menuName,
-                title: getAttribute(menuName, "title", $rootScope.tree)[$rootScope.lang.abbreviation]
+                title: getAttribute(menuName, "title", menuTree)[$rootScope.lang.abbreviation]
             }
         }
 

@@ -8,7 +8,8 @@
         <script src="js/lib/jquery-1.11.1.min.js"></script>
         <script src="js/lib/bootstrap.min.js"></script>
         <script src="js/lib/opencin-sparql.js"></script>
-        <script src="js/index.js"></script>
+        <script src="js/menu-tree.js"></script>
+        <script src="js/controllers.js"></script>
 
         <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
 
@@ -64,7 +65,7 @@
 
                         <form class="navbar-form navbar-left" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Filtrar..." ng-model="listFilter" ng-focus="">
+                                <input type="text" class="form-control" placeholder="{{getString('filter')}}" ng-model="listFilter" ng-focus="">
                             </div>
                         </form>
 
