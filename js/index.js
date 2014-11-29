@@ -1,5 +1,164 @@
-var myApp = angular.module('OpenCIn', []);
+var myApp = angular.module('OpenCIn', ['ngCookies']);
 
+
+
+myApp.controller("LanguageCtrl",
+    function ($scope, $rootScope, $cookieStore) {
+
+        /*Static menu tree*/
+
+        $rootScope.tree = {
+            home: {
+                title: {
+                    en_US: "Home",
+                    pt_BR: "Início"
+                },
+                icon: "fa-home",
+                query: {
+                    sparql: "",
+                    results: {
+                        clickable: true,
+                        menuMatch: "academic"
+                    }
+                },
+                academic: {
+                    title: {
+                        en_US: "Teachers",
+                        pt_BR: "Docentes"
+                    },
+                    icon: "fa-users",
+                    query: {
+                        sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
+                        results: {
+                            clickable: true,
+                            menuMatch: "profile"
+                        }
+                    },
+                    profile: {
+                        title: {
+                            en_US: "Profile",
+                            pt_BR: "Perfil"
+                        },
+                        icon: "fa-user",
+                        query: {
+                            sparql: "select ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email . ?x ?title ?desc . {?x cin:office ?desc } UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
+                            results: {
+                                clickable: false,
+                                menuMatch: "none"
+                            }
+                        }
+                    },
+                    publications: {
+                        title: {
+                            en_US: "Publications",
+                            pt_BR: "Publicações"
+                        },
+                        icon: "fa-quote-right",
+                        query: {
+                            sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
+                            results: {
+                                clickable: false,
+                                menuMatch: "none"
+                            }
+                        }
+                    },
+                    projects: {
+                        title: {
+                            en_US: "Projects",
+                            pt_BR: "Projetos"
+                        },
+                        icon: "fa-gears",
+                        query: {
+                            sparql: "",
+                            results: {
+                                clickable: false,
+                                menuMatch: "none"
+                            }
+                        }
+                    },
+                    positions: {
+                        title: {
+                            en_US: "Positions",
+                            pt_BR: "Cargos"
+                        },
+                        icon: "fa-suitcase",
+                        query: {
+                            sparql: "",
+                            results: {
+                                clickable: false,
+                                menuMatch: "none"
+                            }
+                        }
+                    }
+                },
+                expertiseAreas: {
+                    title: {
+                        en_US: "Expertise Areas",
+                        pt_BR: "Áreas de Atuação"
+                    },
+                    icon: "fa-graduation-cap",
+                    query: {
+                        sparql: "select ?ea as ?title ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
+                        results: {
+                            clickable: false,
+                            menuMatch: "none"
+                        }
+                    }
+
+                },
+                interestAreas: {
+                    title: {
+                        en_US: "Interest Areas",
+                        pt_BR: "Áreas de Interesse"
+                    },
+                    icon: "fa-heart",
+                    query: {
+                        sparql: "select ?ia as ?title ?ianame as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
+                        results: {
+                            clickable: false,
+                            menuMatch: "none"
+                        }
+                    }
+                }
+            }
+
+        };
+
+        $scope.changeLanguage = function (languageAbbreviation) {
+
+            angular.forEach($rootScope.languages, function (element, index) {
+                console.log(element);
+                console.log(index);
+                if (element.abbreviation == languageAbbreviation) {
+                    $rootScope.lang = element;
+                    $cookieStore.put("language", $rootScope.lang);
+                    $rootScope.reload();
+                    return;
+                }
+            });
+
+        }
+
+        $rootScope.languages = [{
+            abbreviation: "pt_BR",
+            title: "Português"
+        }, {
+            abbreviation: "en_US",
+            title: "English"
+        }]
+
+        $rootScope.lang = $cookieStore.get("language");
+        if (!$rootScope.lang) {
+            angular.forEach($rootScope.languages, function (element, index) {
+                $rootScope.lang = element;
+                return;
+            });
+        }
+
+
+
+
+    });
 
 /******************************************************************************/
 /****************************ListCtrl******************************************/
@@ -108,100 +267,7 @@ myApp.controller("ListCtrl",
 myApp.controller("MenuCtrl",
     function ($scope, $rootScope, $window) {
 
-        /*Static menu tree*/
 
-        $rootScope.tree = {
-            home: {
-                title: "Início",
-                icon: "fa-home",
-                query: {
-                    sparql: "",
-                    results: {
-                        clickable: true,
-                        menuMatch: "academic"
-                    }
-                },
-                academic: {
-                    title: "Docentes",
-                    icon: "fa-users",
-                    query: {
-                        sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
-                        results: {
-                            clickable: true,
-                            menuMatch: "profile"
-                        }
-                    },
-                    profile: {
-                        title: "Perfil",
-                        icon: "fa-user",
-                        query: {
-                            sparql: "select ?title ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?x cin:email '%%%' . ?x cin:email ?email . ?x ?title ?desc . {?x cin:office ?desc } UNION {?x cin:phone ?desc} UNION {?x cin:lattes ?desc} UNION {?x cin:homepage ?desc} } group by ?nome",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    },
-                    publications: {
-                        title: "Publicações",
-                        icon: "fa-quote-right",
-                        query: {
-                            sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    },
-                    projects: {
-                        title: "Projetos",
-                        icon: "fa-gears",
-                        query: {
-                            sparql: "",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    },
-                    positions: {
-                        title: "Cargos",
-                        icon: "fa-suitcase",
-                        query: {
-                            sparql: "",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
-                        }
-                    }
-                },
-                expertiseAreas: {
-                    title: "Áreas de Atuação",
-                    icon: "fa-graduation-cap",
-                    query: {
-                        sparql: "select ?ea as ?title ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
-                        results: {
-                            clickable: false,
-                            menuMatch: "none"
-                        }
-                    }
-
-                },
-                interestAreas: {
-                    title: "Áreas de Interesse",
-                    icon: "fa-heart",
-                    query: {
-                        sparql: "select ?ia as ?title ?ianame as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
-                        results: {
-                            clickable: false,
-                            menuMatch: "none"
-                        }
-                    }
-                }
-            }
-
-        };
 
 
         /*Current menu handling*/
@@ -220,7 +286,7 @@ myApp.controller("MenuCtrl",
 
             $scope.currentMenuStack.push({
                 level: menuMatch,
-                title: getAttribute(menuMatch, "title", $rootScope.tree),
+                title: getAttribute(menuMatch, "title", $rootScope.tree)[$rootScope.lang.abbreviation],
                 queryValue: queryValue,
                 filter: lFilter
             });
@@ -239,12 +305,12 @@ myApp.controller("MenuCtrl",
                     if (!changedSelected) {
                         changedSelected = true;
                         $rootScope.selected.name = key;
-                        $rootScope.selected.title = getAttribute(key, "title", $rootScope.tree);
+                        $rootScope.selected.title = getAttribute(key, "title", $rootScope.tree)[$rootScope.lang.abbreviation];
                     }
                     $scope.currentMenu.push({
                         name: key,
                         queryValue: queryValue,
-                        title: getAttribute(key, "title", $rootScope.tree),
+                        title: getAttribute(key, "title", $rootScope.tree)[$rootScope.lang.abbreviation],
                         icon: getAttribute(key, "icon", $rootScope.tree)
                     });
                 }
@@ -255,14 +321,14 @@ myApp.controller("MenuCtrl",
 
 
 
-        $scope.reload = function () {
+        $rootScope.reload = function () {
             $window.location.reload();
         }
         $scope.click = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
             $rootScope.selected = {
                 name: menuName,
-                title: getAttribute(menuName, "title", $rootScope.tree)
+                title: getAttribute(menuName, "title", $rootScope.tree)[$rootScope.lang.abbreviation]
             }
         }
 
