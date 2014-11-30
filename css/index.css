@@ -1,17 +1,14 @@
-body{
+body {
     padding-top: 75px;
     margin-left: 1em;
-	margin-right: 1em;
+    margin-right: 1em;
 }
-
-.results{
-
-}
-
-.listFilter{
+.listFilter {
     width: 50em;
 }
-
 .clickable {
-   cursor: pointer;
+    cursor: pointer;
+}
+.clickable:hover {
+    border-left-color: #e74944;
 }

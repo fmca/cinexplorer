@@ -63,7 +63,7 @@ myApp.controller("ListCtrl",
                 menuMatch: "academic"
             }];
 
-        $rootScope.$on("requestList", function (event, queryValue, menu) {
+        $rootScope.$on("requestList", function (event, queryValue, menu, strings) {
 
             $rootScope.listLoaded = false;
 
@@ -102,8 +102,8 @@ myApp.controller("ListCtrl",
             $scope.queryFail = function (response) {
 
                 $scope.data = [{
-                    "title": "Falha",
-                    "desc": "Não foi possível realizar a busca. Verifique se está conectado à rede do CIn",
+                    "title": $rootScope.getString("error"),
+                    "desc": $rootScope.getString("error_cin_connection"),
                     "clickable": false,
                     "queryValue": "",
                     "menuMatch": $rootScope.selected.name
