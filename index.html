@@ -12,6 +12,8 @@
         <script src="js/strings.js"></script>
         <script src="js/menu-tree.js"></script>
         <script src="js/controllers.js"></script>
+        <script src="js/directives.js"></script>
+
 
         <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
 
@@ -25,7 +27,7 @@
 
         </div>
 
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -42,7 +44,7 @@
 
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="collapse navbar-collapse">
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
@@ -65,15 +67,6 @@
                         </li>
                     </ul>
 
-
-                    <form class="navbar-form navbar-left" role="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="{{getString('filter')}}" ng-model="listFilter">
-                        </div>
-                    </form>
-
-
-
                 </div>
                 <!-- /.navbar-collapse -->
 
@@ -90,19 +83,29 @@
                 <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.title}}</a>
                 </li>
                 <li>{{selected.title}}</li>
-                <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i>
             </ol>
-        </div>
 
+        </div>
 
 
 
 
         <div ng-controller="ListCtrl">
 
+
             <div class="row">
 
                 <div class="col-sm-6 col-xs-12">
+
+
+                    <div class="input-group filter-box">
+                        <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span>  <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded">{{getString("filter")}} </span></span>
+                        <input type="text" id="filter" class="form-control" ng-model="listFilter">
+
+                    </div>
+
+
+
                     <div ng-show="listLoaded" ng-repeat="result in data | filter: listFilter" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true" ng-mouseleave="hover = false" class="panel panel-default results" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)">
                         <div class="panel-heading">
                             {{result.title}}
@@ -115,6 +118,7 @@
 
 
         </div>
+
 </div>
 </body>
 

@@ -3,12 +3,10 @@ body {
     margin-left: 1em;
     margin-right: 1em;
 }
-.listFilter {
-    width: 50em;
-}
 .clickable {
     cursor: pointer;
 }
-.clickable:hover {
-    border-left-color: #e74944;
+
+.filter-box{
+ margin-bottom: 30px;
 }

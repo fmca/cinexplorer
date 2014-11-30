@@ -1,5 +1,24 @@
+myApp.factory('focus', function ($timeout) {
+    return function (id) {
+        // timeout makes sure that is invoked after any other event has been triggered.
+        // e.g. click events that need to run before the focus or
+        // inputs elements that are in a disabled state but are enabled when those events
+        // are triggered.
+        $timeout(function () {
+
+            var element = document.getElementById(id);
+            if (element)
+                element.focus();
+        });
+    };
+});
+
+
+
 myApp.controller("LanguageCtrl",
     function ($scope, $rootScope, $cookieStore, strings) {
+
+
 
         $rootScope.changeLanguage = function (languageAbbreviation) {
 
@@ -52,7 +71,10 @@ myApp.controller("LanguageCtrl",
 /****************************ListCtrl******************************************/
 /******************************************************************************/
 myApp.controller("ListCtrl",
-    function ($scope, $rootScope, menuTree) {
+    function ($scope, $rootScope, menuTree, focus) {
+        focus("filter");
+
+
         $scope.data = [
 
             {
@@ -65,7 +87,9 @@ myApp.controller("ListCtrl",
 
         $rootScope.$on("requestList", function (event, queryValue, menu, strings) {
 
+
             $rootScope.listLoaded = false;
+            $scope.listFilter = "";
 
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
@@ -130,8 +154,6 @@ myApp.controller("ListCtrl",
         });
 
 
-
-
         $scope.click = function (queryValue, menuMatch) {
 
 
@@ -169,17 +191,15 @@ myApp.controller("MenuCtrl",
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
 
-            var lFilter = $rootScope.listFilter;
-            console.log("filter: " + lFilter);
+
+
 
             $scope.currentMenuStack.push({
                 level: menuMatch,
                 title: getAttribute(menuMatch, "title", menuTree)[$rootScope.lang.abbreviation],
-                queryValue: queryValue,
-                filter: lFilter
+                queryValue: queryValue
             });
 
-            $rootScope.listFilter = "";
 
             var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, menuTree)[0];
 
@@ -228,7 +248,6 @@ myApp.controller("MenuCtrl",
                         $scope.currentMenuStack = cms.slice(0, i - 1);
                         $scope.click(itemStack.queryValue, itemStack.level);
                         console.log(itemStack.filter);
-                        $scope.listFilter = itemStack.filter;
 
                         $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level);
                         break;
@@ -239,6 +258,8 @@ myApp.controller("MenuCtrl",
                 }
             }
         }
+
+        focus("filter");
 
 
     });
