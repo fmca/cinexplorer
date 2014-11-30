@@ -1,7 +1,7 @@
 myApp.controller("LanguageCtrl",
     function ($scope, $rootScope, $cookieStore, strings) {
 
-        $scope.changeLanguage = function (languageAbbreviation) {
+        $rootScope.changeLanguage = function (languageAbbreviation) {
 
             angular.forEach($rootScope.languages, function (element, index) {
                 if (element.abbreviation == languageAbbreviation) {
@@ -170,6 +170,7 @@ myApp.controller("MenuCtrl",
 
 
             var lFilter = $rootScope.listFilter;
+            console.log("filter: " + lFilter);
 
             $scope.currentMenuStack.push({
                 level: menuMatch,

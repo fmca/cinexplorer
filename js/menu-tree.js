@@ -48,10 +48,11 @@ myApp.constant("menuTree", {
                 query: {
                     sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
                     results: {
-                        clickable: false,
+                        clickable: true,
                         menuMatch: "none"
                     }
                 }
+
             },
             projects: {
                 title: {
