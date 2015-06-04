@@ -99,16 +99,6 @@
 
                 <div class="col-sm-12 col-xs-12">
 
-
-                      <ul class="nav nav-tabs">
-                        <li class="active"><a href="#home" data-toggle="tab">Home</a>
-                        </li>
-                        <li><a href="#profile" data-toggle="tab">Profile</a>
-                        </li>
-                        <li class="disabled"><a>Disabled</a>
-                        </li>
-                    </ul>
-
                     <div id="filter-box" class="input-group filter-box col-sm-6">
                         <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded">{{getString("filter")}} </span></span>
                         <input type="text" id="filter" class="form-control" ng-model="listFilter">
