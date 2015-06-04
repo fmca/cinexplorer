@@ -1,4 +1,4 @@
-var endpoint_uri = "http://172.21.6.87/sparql/";
+var endpoint_uri = "http://webproj04.cin.ufpe.br/sparql/";
 
 var prefixs = {
 	"cin":"http://www.cin.ufpe.br/opencin/"
