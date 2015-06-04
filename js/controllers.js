@@ -14,6 +14,8 @@ myApp.factory('focus', function ($timeout) {
 });
 
 
+myApp.filter('toHtml', function($sce) { return $sce.trustAsHtml; });
+
 
 myApp.controller("LanguageCtrl",
     function ($scope, $rootScope, $cookieStore, strings) {
@@ -62,6 +64,10 @@ myApp.controller("LanguageCtrl",
             }
         }
 
+        $rootScope.getHtml = function (string){
+               return Autolinker.link(string, {"email": false});
+        }
+
 
 
 
@@ -101,8 +107,11 @@ myApp.controller("ListCtrl",
                     queryValue = [],
                     menuMatch = [];
                 for (var i = 0; i < results.length; i++) {
+                    var namespace = "http://www.cin.ufpe.br/opencin/"
                     title[i] = results[i].title.value;
-                    desc[i] = results[i].desc.value;
+                    title[i] = title[i].replace(namespace, "");
+                    title[i] = title[i].charAt(0).toUpperCase() + title[i].slice(1);
+                    desc[i] = $scope.getHtml(results[i].desc.value);
                     queryValue[i] = results[i].queryValue.value;
                     menuMatch[i] = menu;
                     clickable[i] = getQuery(menu, menuTree).results.clickable;
@@ -119,6 +128,7 @@ myApp.controller("ListCtrl",
                 }
 
                 $rootScope.listLoaded = true;
+                document.getElementById("filter-box").focus();
 
                 $scope.$apply();
             }
@@ -182,6 +192,7 @@ myApp.controller("MenuCtrl",
         /*Current menu handling*/
         /*{
             level: "home",
+            currentCategory: "academic",
             queryValue: ""
         }*/
         $scope.currentMenuStack = [];
@@ -191,17 +202,15 @@ myApp.controller("MenuCtrl",
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
 
 
-
-
-
             $scope.currentMenuStack.push({
                 level: menuMatch,
-                title: getAttribute(menuMatch, "title", menuTree)[$rootScope.lang.abbreviation],
+                currentCategory: "",
+                title: $rootScope.getString(menuMatch),
                 queryValue: queryValue
             });
 
 
-            var childMenu = getChildMenuKeys(last($scope.currentMenuStack).level, menuTree)[0];
+            var childMenu = getChildMenuKeys(menuMatch, menuTree)[0];
 
             $scope.currentMenu = [];
 
@@ -211,16 +220,22 @@ myApp.controller("MenuCtrl",
                     if (!changedSelected) {
                         changedSelected = true;
                         $rootScope.selected.name = key;
-                        $rootScope.selected.title = getAttribute(key, "title", menuTree)[$rootScope.lang.abbreviation];
+                        $rootScope.selected.title = $rootScope.getString(key);
+                        last($scope.currentMenuStack).currentCategory = key;
+                        console.log("last");
+                        console.log(last($scope.currentMenuStack));
                     }
                     $scope.currentMenu.push({
                         name: key,
                         queryValue: queryValue,
-                        title: getAttribute(key, "title", menuTree)[$rootScope.lang.abbreviation],
+                        currentCategory: $rootScope.selected.name,
+                        title: $rootScope.getString(key),
                         icon: getAttribute(key, "icon", menuTree)
                     });
                 }
             }
+
+            console.log($scope.currentMenuStack);
 
         });
 
@@ -232,6 +247,8 @@ myApp.controller("MenuCtrl",
         }
         $scope.click = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
+            last($scope.currentMenuStack).currentCategory = menuName;
+            console.log($scope.currentMenuStack);
             $rootScope.selected = {
                 name: menuName,
                 title: getAttribute(menuName, "title", menuTree)[$rootScope.lang.abbreviation]
@@ -241,13 +258,16 @@ myApp.controller("MenuCtrl",
 
         $scope.back = function (itemStack) {
             var cms = $scope.currentMenuStack;
-            console.log(cms);
+            console.log("current: ");
+            console.log(cms)
+            console.log("clicked: ");
+            console.log(itemStack);
             for (var i = 0; i < cms.length; i++) {
                 if (cms[i].level == itemStack.level) {
                     if (i != 0) {
                         $scope.currentMenuStack = cms.slice(0, i - 1);
                         $scope.click(itemStack.queryValue, itemStack.level);
-                        console.log(itemStack.filter);
+                        console.log("matched: " + cms[i].level + ", " + itemStack.level);
 
                         $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level);
                         break;
@@ -312,3 +332,4 @@ function getChildMenuKeys(key, obj) {
 var last = function (array) {
     return array[array.length - 1];
 }
+

@@ -3,11 +3,13 @@
 
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="js/lib/angular.min.js"></script>
         <script src="js/lib/angular-cookes.min.js"></script>
         <script src="js/lib/jquery-1.11.1.min.js"></script>
         <script src="js/lib/bootstrap.min.js"></script>
         <script src="js/lib/opencin-sparql.js"></script>
+        <script src="js/lib/Autolinker.min.js"></script>
         <script src="js/modules.js"></script>
         <script src="js/strings.js"></script>
         <script src="js/menu-tree.js"></script>
@@ -44,7 +46,7 @@
 
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
@@ -95,22 +97,24 @@
 
             <div class="row">
 
-                <div class="col-sm-6 col-xs-12">
+                <div class="col-sm-12 col-xs-12">
 
 
-                    <div class="input-group filter-box">
-                        <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span>  <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded">{{getString("filter")}} </span></span>
+                    <div id="filter-box" class="input-group filter-box col-sm-6">
+                        <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded">{{getString("filter")}} </span></span>
                         <input type="text" id="filter" class="form-control" ng-model="listFilter">
 
                     </div>
 
 
 
-                    <div ng-show="listLoaded" ng-repeat="result in data | filter: listFilter" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true" ng-mouseleave="hover = false" class="panel panel-default results" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)">
-                        <div class="panel-heading">
-                            {{result.title}}
-                        </div>
-                        <div class="panel-body">{{result.desc}}
+                    <div class="col-sm-6 col-md-4 col-xs-12" ng-show="listLoaded" ng-repeat="result in data | filter: listFilter"  >
+                        <div  class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
+                            <div class="panel-heading">
+                                <b>{{result.title}}</b>
+                            </div>
+                            <div class="panel-body"><div ng-bind-html="result.desc | toHtml"> </div>
+                            </div>
                         </div>
                     </div>
                 </div>
