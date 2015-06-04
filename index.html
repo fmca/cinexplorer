@@ -40,7 +40,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <div ng-controller="MenuCtrl">
-                        <a class="navbar-brand" href="#" ng-click="reload()">CInExplorer</a>
+                        <a class="navbar-brand" href="#" ng-click="reload()">{{header}}</a>
                     </div>
                 </div>
 
@@ -100,6 +100,15 @@
                 <div class="col-sm-12 col-xs-12">
 
 
+                      <ul class="nav nav-tabs">
+                        <li class="active"><a href="#home" data-toggle="tab">Home</a>
+                        </li>
+                        <li><a href="#profile" data-toggle="tab">Profile</a>
+                        </li>
+                        <li class="disabled"><a>Disabled</a>
+                        </li>
+                    </ul>
+
                     <div id="filter-box" class="input-group filter-box col-sm-6">
                         <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded">{{getString("filter")}} </span></span>
                         <input type="text" id="filter" class="form-control" ng-model="listFilter">
@@ -107,13 +116,13 @@
                     </div>
 
 
-
-                    <div class="col-sm-6 col-md-4 col-xs-12" ng-show="listLoaded" ng-repeat="result in data | filter: listFilter"  >
-                        <div  class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
+                    <div class="col-sm-6 col-md-4 col-xs-12" ng-show="listLoaded" ng-repeat="result in data | filter: listFilter">
+                        <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch, result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
                             <div class="panel-heading">
                                 <b>{{result.title}}</b>
                             </div>
-                            <div class="panel-body"><div ng-bind-html="result.desc | toHtml"> </div>
+                            <div class="panel-body">
+                                <div ng-bind-html="result.desc | toHtml"> </div>
                             </div>
                         </div>
                     </div>

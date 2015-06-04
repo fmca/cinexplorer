@@ -14,7 +14,9 @@ myApp.factory('focus', function ($timeout) {
 });
 
 
-myApp.filter('toHtml', function($sce) { return $sce.trustAsHtml; });
+myApp.filter('toHtml', function ($sce) {
+    return $sce.trustAsHtml;
+});
 
 
 myApp.controller("LanguageCtrl",
@@ -64,8 +66,10 @@ myApp.controller("LanguageCtrl",
             }
         }
 
-        $rootScope.getHtml = function (string){
-               return Autolinker.link(string, {"email": false});
+        $rootScope.getHtml = function (string) {
+            return Autolinker.link(string, {
+                "email": false
+            });
         }
 
 
@@ -128,7 +132,6 @@ myApp.controller("ListCtrl",
                 }
 
                 $rootScope.listLoaded = true;
-                document.getElementById("filter-box").focus();
 
                 $scope.$apply();
             }
@@ -155,6 +158,7 @@ myApp.controller("ListCtrl",
             var sparql = sparql.replace("%%%", queryValue);
 
 
+            console.log("querying: " + sparql);
             query(
                 sparql,
                 "json",
@@ -164,17 +168,15 @@ myApp.controller("ListCtrl",
         });
 
 
-        $scope.click = function (queryValue, menuMatch) {
-
-
-            $rootScope.$emit("menuChangeEvent", queryValue, menuMatch);
+        $scope.click = function (queryValue, menuMatch, nextHeaderTitle) {
+            $rootScope.$emit("menuChangeEvent", queryValue, menuMatch, nextHeaderTitle);
             $rootScope.$emit("requestList", queryValue, $rootScope.selected.name);
 
         }
 
 
         /*First menu is home*/
-        $scope.click("", "home");
+        $scope.click("", "home", "CInExplorer");
 
 
     });
@@ -199,16 +201,18 @@ myApp.controller("MenuCtrl",
 
         $rootScope.selected = {};
 
-        $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch) {
+        $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch, headerTitle) {
 
 
             $scope.currentMenuStack.push({
+                header: headerTitle,
                 level: menuMatch,
                 currentCategory: "",
                 title: $rootScope.getString(menuMatch),
                 queryValue: queryValue
             });
 
+            $rootScope.header = headerTitle;
 
             var childMenu = getChildMenuKeys(menuMatch, menuTree)[0];
 
@@ -251,25 +255,23 @@ myApp.controller("MenuCtrl",
             console.log($scope.currentMenuStack);
             $rootScope.selected = {
                 name: menuName,
-                title: getAttribute(menuName, "title", menuTree)[$rootScope.lang.abbreviation]
+                title: $rootScope.getString(menuName)
             }
         }
 
 
         $scope.back = function (itemStack) {
             var cms = $scope.currentMenuStack;
-            console.log("current: ");
-            console.log(cms)
-            console.log("clicked: ");
             console.log(itemStack);
             for (var i = 0; i < cms.length; i++) {
                 if (cms[i].level == itemStack.level) {
                     if (i != 0) {
-                        $scope.currentMenuStack = cms.slice(0, i - 1);
-                        $scope.click(itemStack.queryValue, itemStack.level);
                         console.log("matched: " + cms[i].level + ", " + itemStack.level);
+                        $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level, cms[i - 1].header);
 
-                        $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level);
+                        $scope.click(cms[i - 1].queryValue, itemStack.level);
+                         $scope.currentMenuStack = cms.slice(0, i);
+
                         break;
                     } else {
                         $scope.reload();
@@ -332,4 +334,3 @@ function getChildMenuKeys(key, obj) {
 var last = function (array) {
     return array[array.length - 1];
 }
-
