@@ -176,7 +176,7 @@ myApp.controller("ListCtrl",
 
 
         /*First menu is home*/
-        $scope.click("", "home", "CInExplorer");
+        $scope.click("", "home", "");
 
 
     });
@@ -226,9 +226,8 @@ myApp.controller("MenuCtrl",
                         $rootScope.selected.name = key;
                         $rootScope.selected.title = $rootScope.getString(key);
                         last($scope.currentMenuStack).currentCategory = key;
-                        console.log("last");
-                        console.log(last($scope.currentMenuStack));
                     }
+
                     $scope.currentMenu.push({
                         name: key,
                         queryValue: queryValue,
@@ -238,8 +237,6 @@ myApp.controller("MenuCtrl",
                     });
                 }
             }
-
-            console.log($scope.currentMenuStack);
 
         });
 
@@ -259,14 +256,18 @@ myApp.controller("MenuCtrl",
             }
         }
 
-
         $scope.back = function (itemStack) {
+
             var cms = $scope.currentMenuStack;
-            console.log(itemStack);
+            if(!itemStack){
+                itemStack = cms[cms.length-1];
+            }
+
+
+
             for (var i = 0; i < cms.length; i++) {
                 if (cms[i].level == itemStack.level) {
                     if (i != 0) {
-                        console.log("matched: " + cms[i].level + ", " + itemStack.level);
                         $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level, cms[i - 1].header);
 
                         $scope.click(cms[i - 1].queryValue, itemStack.level);
