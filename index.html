@@ -28,6 +28,7 @@
         <div ng-controller="LanguageCtrl">
 
         </div>
+<div ng-controller="MenuCtrl">
 
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container-fluid">
@@ -39,22 +40,25 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <div ng-controller="MenuCtrl">
-                        <a class="navbar-brand" href="#" ng-click="reload()">{{header}}</a>
-                    </div>
+
+                        <button type="button" class="btn btn-primary navbar-brand" aria-label="Left Align" ng-click="back()" ng-show="currentMenuStack.length > 1">
+                          <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                            <!-- <a class="" href="#" ng-click="reload()">{{header}}</a> -->
+                        </button>
+
                 </div>
 
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <div ng-controller="MenuCtrl">
                         <ul class="nav navbar-nav">
 
                             <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
                             </li>
 
                         </ul>
-                    </div>
+
+                    <p class="navbar-text"> <b>{{header}}</b></p>
 
 
                     <ul class="nav navbar-nav navbar-right">
@@ -78,7 +82,6 @@
         </nav>
 
 
-        <div ng-controller="MenuCtrl">
             <ol class="breadcrumb">
 
                 <i class="fa fa-home"></i>
@@ -87,7 +90,6 @@
                 <li>{{selected.title}}</li>
             </ol>
 
-        </div>
 
 
 
