@@ -33,8 +33,21 @@ myApp.constant("menuTree", {
                     sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
                     results: {
                         clickable: true,
-                        menuMatch: "none"
+                        menuMatch: "publication"
                     }
+                },
+                publication: {
+                    icon: "fa-file-text-o",
+                    query: {
+                        sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where { <%%%> ?prop ?val FILTER isLiteral(?val)}",
+
+                        results: {
+                            clickable: false,
+                            menuMatch: "none"
+                        }
+
+                    }
+
                 }
 
             },
