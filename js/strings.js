@@ -47,5 +47,9 @@ myApp.constant("strings", {
     interestAreas: {
         en_US: "Areas of Interest",
         pt_BR: "Áreas de Interesse"
+    },
+    publication: {
+        en_US: "Publication",
+        pt_BR: "Publicação"
     }
 });
