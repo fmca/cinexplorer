@@ -33,5 +33,6 @@ function getResult(endpoint, data, success_callback, error_callback) {
 
 
     xmlhttp.open("GET", endpoint+"?"+data, true);
+    xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=ISO-8859-1')
     xmlhttp.send();
 }
