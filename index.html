@@ -58,8 +58,6 @@
 
                         </ul>
 
-                    <p class="navbar-text"> <b>{{header}}</b></p>
-
 
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="http://www.cin.ufpe.br/~fmca/dadosabertos">OpenCIn</a>
@@ -99,16 +97,22 @@
 
             <div class="row">
 
-                <div class="col-sm-12 col-xs-12">
+                 <div class="col-sm-12 col-xs-12">
 
-                    <div id="filter-box" class="input-group filter-box col-sm-6">
-                        <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded">{{getString("filter")}} </span></span>
-                        <input type="text" id="filter" class="form-control" ng-model="listFilter">
 
+
+                    <div class="col-sm-8 col-md-8">
+                        <div id="filter-box" class="input-group filter-box" style="float: right;">
+                            <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded"> <b> {{header}}</b></span></span>
+                            <input type="text" id="filter" class="form-control" ng-model="listFilter">
+                            <span class="input-group-addon"> <i class="fa fa-search"></i> </span>
+                        </div>
                     </div>
 
+                </div>
+ <div class="col-sm-12 col-xs-12">
 
-                    <div class="col-sm-6 col-md-4 col-xs-12" ng-show="listLoaded" ng-repeat="result in data | filter: listFilter">
+                    <div class="col-lg-4 col-sm-6 col-md-6 col-xs-12" ng-show="listLoaded" ng-repeat="result in data | filter: listFilter">
                         <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch, result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
                             <div class="panel-heading">
                                 <b>{{result.title}}</b>
@@ -118,6 +122,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
