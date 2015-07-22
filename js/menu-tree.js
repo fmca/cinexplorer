@@ -51,6 +51,48 @@ myApp.constant("menuTree", {
                 }
 
             },
+            news: {
+                icon: "fa-newspaper-o",
+                query: {
+                    sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?doc cin:email '%%%' . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by ?title",
+                    results: {
+                        clickable: true,
+                        menuMatch: "newsItem"
+                    }
+                },
+                newsItem: {
+                    icon: "fa-newspaper-o",
+                    query: {
+                        sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where { <%%%> ?prop ?val FILTER isLiteral(?val)}",
+
+                        results: {
+                                clickable: false,
+                                menuMatch: "none"
+                            }
+                    }
+                }
+            },
+            orientations: {
+                icon: "fa-users",
+                query: {
+                    sparql: "SELECT DISTINCT ?t as ?title ?titulo as ?desc ?tese as ?queryValue WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo }",
+                    results:{
+                        clickable: true,
+                        menuMatch: "thesis"
+                    }
+                },
+                thesis:{
+                        icon: "fa-indent",
+                        query: {
+                            sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where {{<%%%> ?prop ?val FILTER isLiteral(?val)} UNION {?aluno cin:creator <%%%> . ?aluno cin:name ?val . ?aluno ?prop ?val}}",
+                            results: {
+                                clickable: false,
+                                menuMatch: "none"
+                            }
+                        }
+                    }
+
+            },
             projects: {
                 icon: "fa-gears",
                 query: {

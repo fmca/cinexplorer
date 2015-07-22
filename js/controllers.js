@@ -155,7 +155,7 @@ myApp.controller("ListCtrl",
 
             var queryString = getQuery(menu, menuTree);
             var sparql = queryString.sparql;
-            var sparql = sparql.replace("%%%", queryValue);
+            var sparql = sparql.split("%%%").join(queryValue) //replace all occurences
 
 
             console.log("querying: " + sparql);

@@ -51,5 +51,21 @@ myApp.constant("strings", {
     publication: {
         en_US: "Publication",
         pt_BR: "Publicação"
+    },
+    news: {
+        en_US: "News",
+        pt_BR: "Notícias"
+    },
+    newsItem: {
+        en_US: "News",
+        pt_BR: "Notícia"
+    },
+    orientations: {
+        en_US: "Orientations",
+        pt_BR: "Orientações"
+    },
+    thesis: {
+        en_US: "Thesis",
+        pt_BR: "Dissertação/Tese"
     }
 });
