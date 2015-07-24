@@ -85,6 +85,43 @@ myApp.controller("ListCtrl",
         focus("filter");
 
 
+
+
+
+        $scope.showGroupFilter = function(groupName){
+            if(groupName != 'none') return groupName;
+        }
+
+        $scope.addGroup = function(group){
+
+            var i = $.inArray(group, $scope.groups);
+            if(i==-1) {
+                $scope.groups.push(group);
+                $scope.selectedGroups.push(group);
+            }
+        }
+
+        $scope.toggleGroup = function (group) {
+            var i = $.inArray(group, $scope.selectedGroups);
+            if (i > -1) {
+                console.log(group);
+                $scope.selectedGroups.splice(i, 1);
+                console.log($scope.selectedGroups);
+            } else {
+                $scope.selectedGroups.push(group);
+            }
+        }
+
+        $scope.groupFilter = function (item) {
+            if ($scope.selectedGroups.length > 0) {
+                if ($.inArray(item.group, $scope.selectedGroups) >= 0)
+                    return item;
+            }
+
+            return;
+        }
+
+
         $scope.data = [
 
             {
@@ -97,6 +134,8 @@ myApp.controller("ListCtrl",
 
         $rootScope.$on("requestList", function (event, queryValue, menu, strings) {
 
+            $scope.groups = [];
+            $scope.selectedGroups = [];
 
             $rootScope.listLoaded = false;
             $scope.listFilter = "";
@@ -109,23 +148,36 @@ myApp.controller("ListCtrl",
                     desc = [],
                     clickable = [],
                     queryValue = [],
-                    menuMatch = [];
+                    menuMatch = [],
+                    group = [];
+
+                var removeNamespace = function(item){
+                    if(item.hasOwnProperty("value")){
+                        var namespace = "http://www.cin.ufpe.br/opencin/";
+                        item = item.value;
+                        item = item.replace(namespace, "");
+                        return item.charAt(0).toUpperCase() + item.slice(1);;
+                    }
+                    return item;
+
+                }
                 for (var i = 0; i < results.length; i++) {
-                    var namespace = "http://www.cin.ufpe.br/opencin/"
-                    title[i] = results[i].title.value;
-                    title[i] = title[i].replace(namespace, "");
-                    title[i] = title[i].charAt(0).toUpperCase() + title[i].slice(1);
+
+                    title[i] = removeNamespace(results[i].title);
                     desc[i] = $scope.getHtml(results[i].desc.value);
                     queryValue[i] = results[i].queryValue.value;
                     menuMatch[i] = menu;
                     clickable[i] = getQuery(menu, menuTree).results.clickable;
+                    group[i] = removeNamespace(results[i].group == null ? 'none' : results[i].group);
+                    $scope.addGroup(group[i]);
 
                     $scope.data.push({
                         "title": title[i],
                         "desc": desc[i],
                         "clickable": clickable[i],
                         "queryValue": queryValue[i],
-                        "menuMatch": menuMatch[i]
+                        "menuMatch": menuMatch[i],
+                        "group": group[i]
                     });
 
 
@@ -259,8 +311,8 @@ myApp.controller("MenuCtrl",
         $scope.back = function (itemStack) {
 
             var cms = $scope.currentMenuStack;
-            if(!itemStack){
-                itemStack = cms[cms.length-1];
+            if (!itemStack) {
+                itemStack = cms[cms.length - 1];
             }
 
 
@@ -271,7 +323,7 @@ myApp.controller("MenuCtrl",
                         $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level, cms[i - 1].header);
 
                         $scope.click(cms[i - 1].queryValue, itemStack.level);
-                         $scope.currentMenuStack = cms.slice(0, i);
+                        $scope.currentMenuStack = cms.slice(0, i);
 
                         break;
                     } else {

@@ -30,7 +30,7 @@ myApp.constant("menuTree", {
             publications: {
                 icon: "fa-quote-right",
                 query: {
-                    sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
+                    sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue ?type as ?group where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
                     results: {
                         clickable: true,
                         menuMatch: "publication"
@@ -75,7 +75,7 @@ myApp.constant("menuTree", {
             orientations: {
                 icon: "fa-users",
                 query: {
-                    sparql: "SELECT DISTINCT ?t as ?title ?titulo as ?desc ?tese as ?queryValue WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo }",
+                    sparql: "SELECT DISTINCT ?nome as ?title ?titulo as ?desc ?tese as ?queryValue ?t as ?group WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo . ?aluno cin:name ?nome }",
                     results:{
                         clickable: true,
                         menuMatch: "thesis"
