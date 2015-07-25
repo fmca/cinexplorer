@@ -75,7 +75,7 @@ myApp.constant("menuTree", {
             orientations: {
                 icon: "fa-users",
                 query: {
-                    sparql: "SELECT DISTINCT ?nome as ?title ?titulo as ?desc ?tese as ?queryValue ?t as ?group WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo . ?aluno cin:name ?nome }",
+                    sparql: "SELECT DISTINCT ?nome as ?title ?titulo as ?desc ?tese as ?queryValue ?t as ?group WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo . ?aluno cin:name ?nome . ?aluno cin:email ?emailAluno}",
                     results:{
                         clickable: true,
                         menuMatch: "thesis"
@@ -84,7 +84,7 @@ myApp.constant("menuTree", {
                 thesis:{
                         icon: "fa-indent",
                         query: {
-                            sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where {{<%%%> ?prop ?val FILTER isLiteral(?val)} UNION {?aluno cin:creator <%%%> . ?aluno cin:name ?val . ?aluno ?prop ?val}}",
+                            sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where {{<%%%> ?prop ?val FILTER isLiteral(?val)} UNION {?aluno cin:creator <%%%> . ?aluno cin:name ?val . ?aluno ?prop ?val} UNION {?aluno cin:creator <%%%> . ?aluno cin:email ?val . ?aluno ?prop ?val}}",
                             results: {
                                 clickable: false,
                                 menuMatch: "none"
