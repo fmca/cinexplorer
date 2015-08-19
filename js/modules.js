@@ -1,1 +1,1 @@
-var myApp = angular.module('OpenCIn', ['ngCookies']);
+var myApp = angular.module('OpenCIn', ['ngCookies', 'wu.masonry']);
