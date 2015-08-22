@@ -88,14 +88,14 @@ myApp.controller("ListCtrl",
 
 
 
-        $scope.showGroupFilter = function(groupName){
-            if(groupName != 'none') return groupName;
+        $scope.showGroupFilter = function (groupName) {
+            if (groupName != 'none') return groupName;
         }
 
-        $scope.addGroup = function(group){
+        $scope.addGroup = function (group) {
 
             var i = $.inArray(group, $scope.groups);
-            if(i==-1) {
+            if (i == -1) {
                 $scope.groups.push(group);
                 $scope.selectedGroups.push(group);
             }
@@ -134,6 +134,8 @@ myApp.controller("ListCtrl",
 
         $rootScope.$on("requestList", function (event, queryValue, menu, strings) {
 
+
+
             $scope.groups = [];
             $scope.selectedGroups = [];
 
@@ -151,8 +153,8 @@ myApp.controller("ListCtrl",
                     menuMatch = [],
                     group = [];
 
-                var removeNamespace = function(item){
-                    if(item.hasOwnProperty("value")){
+                var removeNamespace = function (item) {
+                    if (item && item.hasOwnProperty("value")) {
                         var namespace = "http://www.cin.ufpe.br/opencin/";
                         item = item.value;
                         item = item.replace(namespace, "");
@@ -219,6 +221,14 @@ myApp.controller("ListCtrl",
 
         });
 
+        $scope.shouldShow = function (result) {
+            if (result) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
 
         $scope.click = function (queryValue, menuMatch, nextHeaderTitle) {
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch, nextHeaderTitle);
@@ -253,31 +263,38 @@ myApp.controller("MenuCtrl",
 
         $rootScope.selected = {};
 
-        $rootScope.$on("menuChangeEvent", function (event, queryValue, menuMatch, headerTitle) {
+        $rootScope.$on("menuChangeEvent", function (event, queryValue, menu, headerTitle) {
 
 
             $scope.currentMenuStack.push({
                 header: headerTitle,
-                level: menuMatch,
+                level: menu,
                 currentCategory: "",
-                title: $rootScope.getString(menuMatch),
+                title: $rootScope.getString(menu),
                 queryValue: queryValue
             });
 
             $rootScope.header = headerTitle;
 
-            var childMenu = getChildMenuKeys(menuMatch, menuTree)[0];
+            var childMenu = getChildMenuKeys(menu, menuTree)[0];
 
+            var key = childMenu["query"]["results"]["menuMatch"];
             $scope.currentMenu = [];
+            $rootScope.selected.name = key;
+            $rootScope.selected.title = $rootScope.getString(key);
+            last($scope.currentMenuStack).currentCategory = key;
+            
+            
+            var parent = getParent(key, menuTree);
+            console.log(key, " -> parent: ", parent);
 
             var changedSelected = false;
-            for (var key in childMenu) {
+            for (var key in parent) {
                 if (key != "title" && key != "query" && key != "icon") {
                     if (!changedSelected) {
+                        console.log("childMenu: ", key, childMenu);
                         changedSelected = true;
-                        $rootScope.selected.name = key;
-                        $rootScope.selected.title = $rootScope.getString(key);
-                        last($scope.currentMenuStack).currentCategory = key;
+
                     }
 
                     $scope.currentMenu.push({
@@ -381,6 +398,26 @@ function getChildMenuKeys(key, obj) {
         }
     }
     return objects;
+}
+
+function getParent(key, tree){
+    var parent = undefined;
+    for (var i in tree) {
+        if (!tree.hasOwnProperty(i)) continue;
+        if (typeof tree[i] == 'object') {
+            var recursiveParent = getParent(key, tree[i]);
+            if(recursiveParent){
+                parent = recursiveParent;
+                break;
+            }
+        }
+        if (i == key) {
+            parent = tree;
+        }
+    }
+    
+    return parent;
+    
 }
 
 

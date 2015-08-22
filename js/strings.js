@@ -67,5 +67,9 @@ myApp.constant("strings", {
     thesis: {
         en_US: "Thesis",
         pt_BR: "Dissertação/Tese"
+    },
+    academicPerArea: {
+        en_US: "Teachers By Area",
+        pt_BR: "Professores por Área"
     }
 });

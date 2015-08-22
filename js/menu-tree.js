@@ -30,7 +30,7 @@ myApp.constant("menuTree", {
             publications: {
                 icon: "fa-quote-right",
                 query: {
-                    sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue ?type as ?group where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name} group by ?name order by ?type",
+                    sparql: "select ?type as ?title ?name as ?desc ?public as ?queryValue ?type as ?group where {?x cin:email '%%%' . ?public ?idProfessor ?x . ?public rdf:type ?type . ?public cin:title ?name . MINUS { ?public rdf:type cin:newsitem }} group by ?name order by ?type",
                     results: {
                         clickable: true,
                         menuMatch: "publication"
@@ -66,9 +66,9 @@ myApp.constant("menuTree", {
                         sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where { <%%%> ?prop ?val FILTER isLiteral(?val)}",
 
                         results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
+                            clickable: false,
+                            menuMatch: "none"
+                        }
                     }
                 }
             },
@@ -76,22 +76,32 @@ myApp.constant("menuTree", {
                 icon: "fa-users",
                 query: {
                     sparql: "SELECT DISTINCT ?nome as ?title ?titulo as ?desc ?tese as ?queryValue ?t as ?group WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo . ?aluno cin:name ?nome . ?aluno cin:email ?emailAluno}",
-                    results:{
+                    results: {
                         clickable: true,
                         menuMatch: "thesis"
                     }
                 },
-                thesis:{
-                        icon: "fa-indent",
-                        query: {
-                            sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where {{<%%%> ?prop ?val FILTER isLiteral(?val)} UNION {?aluno cin:creator <%%%> . ?aluno cin:name ?val . ?aluno ?prop ?val} UNION {?aluno cin:creator <%%%> . ?aluno cin:email ?val . ?aluno ?prop ?val}}",
-                            results: {
-                                clickable: false,
-                                menuMatch: "none"
-                            }
+                thesis: {
+                    icon: "fa-indent",
+                    query: {
+                        sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where {{<%%%> ?prop ?val FILTER isLiteral(?val)} UNION {?aluno cin:creator <%%%> . ?aluno cin:name ?val . ?aluno ?prop ?val} UNION {?aluno cin:creator <%%%> . ?aluno cin:email ?val . ?aluno ?prop ?val}}",
+                        results: {
+                            clickable: false,
+                            menuMatch: "none"
                         }
                     }
+                }
 
+            },
+            interestAreas: {
+                icon: "fa-heart",
+                query: {
+                    sparql: "select ?ianame as ?desc ?ia as ?queryValue where {?x cin:email '%%%' . ?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
+                    results: {
+                        clickable: false,
+                        menuMatch: "none"
+                    }
+                }
             },
             projects: {
                 icon: "fa-gears",
@@ -117,23 +127,23 @@ myApp.constant("menuTree", {
         expertiseAreas: {
             icon: "fa-graduation-cap",
             query: {
-                sparql: "select ?ea as ?title ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
+                sparql: "select ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
                 results: {
-                    clickable: false,
-                    menuMatch: "none"
+                    clickable: true,
+                    menuMatch: "academicPerArea"
+                }
+            },
+            academicPerArea: {
+                icon: "fa-users",
+                query: {
+                    sparql: "select distinct ?name as ?title ?email as ?desc ?email as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise <%%%> . ?x cin:name ?name . ?x cin:email ?email} order by ?name",
+                    results: {
+                        clickable: true,
+                        menuMatch: "profile"
+                    }
                 }
             }
 
-        },
-        interestAreas: {
-            icon: "fa-heart",
-            query: {
-                sparql: "select ?ia as ?title ?ianame as ?desc ?ia as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
-                results: {
-                    clickable: false,
-                    menuMatch: "none"
-                }
-            }
         }
     }
 

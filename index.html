@@ -133,11 +133,11 @@
 
 
                     </div>
-                    <div class="col-lg-12 col-sm-12 col-xs-12"  masonry load-images="false">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12"  masonry="{transitionDuration: 0}" load-images="false">
 
                         <div class="col-lg-3 col-sm-6 col-md-6 col-xs-12 masonry-brick" ng-show="listLoaded" ng-repeat="result in ( (data | filter: groupFilter) | filter: listFilter)">
                             <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch, result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
-                                <div class="panel-heading">
+                                <div class="panel-heading" ng-show="shouldShow('{{result.title}}')">
                                     <b>{{result.title}}</b>
                                 </div>
                                 <div class="panel-body">
