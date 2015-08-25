@@ -71,5 +71,9 @@ myApp.constant("strings", {
     academicPerArea: {
         en_US: "Teachers By Area",
         pt_BR: "Professores por Área"
+    },
+    expertiseAreasByTeacher: {
+        en_US: "Expertise Areas",
+        pt_BR: "Áreas de Atuação"
     }
 });
