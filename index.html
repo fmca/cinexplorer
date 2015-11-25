@@ -66,8 +66,6 @@
 
 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="http://www.cin.ufpe.br/~opencin/explorer/">OpenCIn</a>
-                            </li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{lang.title}} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
@@ -85,31 +83,70 @@
                 <!-- /.container-fluid -->
             </nav>
 
+			<div class="col-sm-1 col-xs-1"> </div>
+			<div class="col-sm-10 col-xs-10">
+			
+			
+			<div class="row">
+				<ol class="breadcrumb">
 
-            <ol class="breadcrumb">
+					<i class="fa fa-home"></i>
+					<li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.title}}</a>
+					</li>
+					<li>{{selected.title}}</li>
+				</ol>
+			</div>
 
-                <i class="fa fa-home"></i>
-                <li ng-repeat="item in currentMenuStack" ng-click="back(item)"><a href="#">{{item.title}}</a>
-                </li>
-                <li>{{selected.title}}</li>
-            </ol>
-
-
-
-
+			<div class="row" ng-if="selected.name == 'intro'">
+				<div class="panel panel-primary">
+					<div class="panel-heading hero"><h3>OpenCIn</h3></div>
+					<div class="panel-body">
+						<p>Informações relacionadas ao CIn agora estão disponíveis ao público geral através de uma infra-estrutura de suporte à Web Semântica. 
+						Os dados foram modelados através de uma <a href="http://www.cin.ufpe.br/~opencin/ontology/" data-toggle="tooltip" title="Ver descrição da ontologia"><u>ontologia</u></a> que descreve o ambiente acadêmico pelo qual
+						o CIn-UFPE está imerso, essencialmente focada nos docentes e entidades relacionadas. Dela são extraídas as áreas de interesse de cada professor, 
+						bem como as disciplinas por ele lecionadas, suas publicações, participações em eventos e os projetos que ele faz parte. 
+						</p>
+						<p>O acesso ao dados pode ser feito através desta interface Web ou de consultas SPARQL sob o <a href="http://webproj04.cin.ufpe.br/sparql/" data-toggle="tooltip" title="Ir para o endpoint SPARQL"><u>endpoint</u></a> do OpenCIn.
+						</p>
+						<p>
+							<button type="button" class="btn btn-default btn-md" ng-click="click('', 'academic')">
+							Começar a explorar <span class="fa fa-search fa-flip-horizontal" aria-hidden="true"></span> 
+							</button>
+						</p>
+					</div>
+					<script>
+						<!-- Somente para inicializar os tooltips nos links acima -->
+						$(function () {
+						  $('[data-toggle="tooltip"]').tooltip()
+						})
+					</script>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading hero"><h3>Contribuidores</h3></div>
+					<div class="panel-body">
+						<table class="table">
+						<thead> <tr><th>Professores</th></tr></thead>
+						<tbody> <tr><td>Bernadette Lóscio</td><td>bfl@cin.ufpe.br</td></tr> </tbody>
+						  </table>
+						<table class="table">
+						<thead> <tr><th>Alunos</th></tr></thead>
+						<tbody> <tr><td>Bruna Baudel</td><td>bcbs@cin.ufpe.br</td></tr> <tr><td>Filipe Arruda</td> <td>fmca@cin.ufpe.br</td></tr>
+						<tr><td>Jônatas Lira</td> <td>jlr@cin.ufpe.br</td></tr>
+						<tr><td>Karina Silva</td> <td>kms2@cin.ufpe.br</td></tr>
+						<tr><td>Karine Gomes</td> <td>kgmg@cin.ufpe.br</td></tr></tbody>
+						  </table>
+					</div>
+				</div>
+			</div>
 
             <div ng-controller="ListCtrl">
 
+                <div class="row" ng-if="selected.name != 'intro'">
 
-                <div class="row">
-
-                    <div class="col-sm-12 col-xs-12">
-
-
-
-                        <div class="col-sm-8 col-md-8">
-                            <div id="filter-box" class="input-group filter-box" style="float: right;">
-                                <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded"> <b> {{header}}</b></span></span>
+						<div class="row">
+                        <div ng-class="groups.length <= 1 ? 'col-md-12' : 'col-md-8'">
+                            <div id="filter-box" class="input-group filter-box">
+                                <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span id="content-desc" style="margin-left: 5px"> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded"> <b> {{header}}</b></span> </span></span>
                                 <input type="text" id="filter" class="form-control" ng-model="listFilter">
                                 <span class="input-group-addon"> <i class="fa fa-search"></i> </span>
                             </div>
@@ -127,14 +164,12 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-                    </div>
-                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12"  masonry="{transitionDuration: 0}" load-images="false">
+						</div>
+						<div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 row"  masonry="{transitionDuration: 0}" load-images="false">
 
                         <div class="col-lg-3 col-sm-6 col-md-4 col-xs-12 masonry-brick" ng-show="listLoaded" ng-repeat="result in ( (data | filter: groupFilter) | filter: listFilter)">
-                            <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch, result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
+                            <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch, result.title == undefined ? result.desc : result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
                                 <div class="panel-heading" ng-show="shouldShow('{{result.title}}')">
                                     <b>{{result.title}}</b>
                                 </div>
@@ -145,10 +180,13 @@
                         </div>
 
                     </div>
+					</div>
                 </div>
 
 
             </div>
+			</div>
+			<div class="col-sm-1 col-xs-1"> </div>
 
         </div>
     </body>

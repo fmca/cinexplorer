@@ -39,7 +39,7 @@ myApp.controller("LanguageCtrl",
 
         $rootScope.languages = [{
             abbreviation: "pt_BR",
-            title: "Portuguese"
+            title: "Português"
         }, {
             abbreviation: "en_US",
             title: "English"
@@ -49,10 +49,7 @@ myApp.controller("LanguageCtrl",
 
         $rootScope.lang = $cookieStore.get("language");
         if (!$rootScope.lang) {
-            angular.forEach($rootScope.languages, function (element, index) {
-                $rootScope.lang = element;
-                return;
-            });
+                $rootScope.lang = $rootScope.languages[0];
         }
 
         /*Strings */
@@ -274,6 +271,8 @@ myApp.controller("MenuCtrl",
                 title: $rootScope.getString(menu),
                 queryValue: queryValue
             });
+			
+			console.log("currentMenu", $rootScope.selected)
 
             $rootScope.header = headerTitle;
 
