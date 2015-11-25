@@ -102,9 +102,7 @@ myApp.controller("ListCtrl",
         $scope.toggleGroup = function (group) {
             var i = $.inArray(group, $scope.selectedGroups);
             if (i > -1) {
-                console.log(group);
                 $scope.selectedGroups.splice(i, 1);
-                console.log($scope.selectedGroups);
             } else {
                 $scope.selectedGroups.push(group);
             }
@@ -210,7 +208,7 @@ myApp.controller("ListCtrl",
             var sparql = sparql.split("%%%").join(queryValue) //replace all occurences
 
 
-            console.log("querying: " + sparql);
+            //console.log("querying: " + sparql);
             query(
                 sparql,
                 "json",
@@ -228,7 +226,7 @@ myApp.controller("ListCtrl",
         }
 
 
-        $scope.click = function (queryValue, menuMatch, nextHeaderTitle) {
+        $scope.listItemClick = function (queryValue, menuMatch, nextHeaderTitle) {
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch, nextHeaderTitle);
             $rootScope.$emit("requestList", queryValue, $rootScope.selected.name);
 
@@ -236,7 +234,7 @@ myApp.controller("ListCtrl",
 
 
         /*First menu is home*/
-        $scope.click("", "home", "");
+        $scope.listItemClick("", "home", "");
 
 
     });
@@ -272,7 +270,6 @@ myApp.controller("MenuCtrl",
                 queryValue: queryValue
             });
 			
-			console.log("currentMenu", $rootScope.selected)
 
             $rootScope.header = headerTitle;
 
@@ -286,13 +283,12 @@ myApp.controller("MenuCtrl",
             
             
             var parent = getParent(key, menuTree);
-            console.log(key, " -> parent: ", parent);
 
             var changedSelected = false;
             for (var key in parent) {
                 if (key != "title" && key != "query" && key != "icon") {
                     if (!changedSelected) {
-                        console.log("childMenu: ", key, childMenu);
+                        //console.log("childMenu: ", key, childMenu);
                         changedSelected = true;
 
                     }
@@ -315,10 +311,9 @@ myApp.controller("MenuCtrl",
         $rootScope.reload = function () {
             $window.location.reload();
         }
-        $scope.click = function (queryValue, menuName) {
+        $scope.menuClick = function (queryValue, menuName) {
             $rootScope.$emit("requestList", queryValue, menuName);
             last($scope.currentMenuStack).currentCategory = menuName;
-            console.log($scope.currentMenuStack);
             $rootScope.selected = {
                 name: menuName,
                 title: $rootScope.getString(menuName)
@@ -339,7 +334,7 @@ myApp.controller("MenuCtrl",
                     if (i != 0) {
                         $rootScope.$emit("menuChangeEvent", cms[i - 1].queryValue, cms[i - 1].level, cms[i - 1].header);
 
-                        $scope.click(cms[i - 1].queryValue, itemStack.level);
+                        $scope.menuClick(cms[i - 1].queryValue, itemStack.level);
                         $scope.currentMenuStack = cms.slice(0, i);
 
                         break;

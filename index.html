@@ -59,7 +59,7 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
 
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="click(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="menuClick(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
                             </li>
 
                         </ul>
@@ -97,7 +97,7 @@
 				</ol>
 			</div>
 
-			<div class="row" ng-if="selected.name == 'intro'">
+			<div class="row"  ng-show="selected.name == 'intro'">
 				<div class="panel panel-primary">
 					<div class="panel-heading hero"><h3>OpenCIn</h3></div>
 					<div class="panel-body">
@@ -109,7 +109,7 @@
 						<p>O acesso ao dados pode ser feito através desta interface Web ou de consultas SPARQL sob o <a href="http://webproj04.cin.ufpe.br/sparql/" data-toggle="tooltip" title="Ir para o endpoint SPARQL"><u>endpoint</u></a> do OpenCIn.
 						</p>
 						<p>
-							<button type="button" class="btn btn-default btn-md" ng-click="click('', 'academic')">
+							<button class="btn btn-default btn-md" ng-click="menuClick('academic', 'academic')">
 							Começar a explorar <span class="fa fa-search fa-flip-horizontal" aria-hidden="true"></span> 
 							</button>
 						</p>
@@ -169,7 +169,7 @@
                     <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 row"  masonry="{transitionDuration: 0}" load-images="false">
 
                         <div class="col-lg-3 col-sm-6 col-md-4 col-xs-12 masonry-brick" ng-show="listLoaded" ng-repeat="result in ( (data | filter: groupFilter) | filter: listFilter)">
-                            <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || click(result.queryValue, result.menuMatch, result.title == undefined ? result.desc : result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
+                            <div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || listItemClick(result.queryValue, result.menuMatch, result.title == undefined ? result.desc : result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
                                 <div class="panel-heading" ng-show="shouldShow('{{result.title}}')">
                                     <b>{{result.title}}</b>
                                 </div>
