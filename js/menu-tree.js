@@ -11,7 +11,7 @@ myApp.constant("menuTree", {
 		intro: {
 			icon: "fa-home",
 			query: {
-				sparql: "",
+				sparql: "select ?x as ?title ?x as ?desc ?x as ?queryValue where {?x ?y ?z} limit 1",
 				results: {
 					clickable: false,
 					menuMatch: ""
