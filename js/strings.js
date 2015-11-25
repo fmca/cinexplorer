@@ -19,10 +19,18 @@ myApp.constant("strings", {
         en_US: "Home",
         pt_BR: "Início"
     },
+	intro: {
+        en_US: "Intro",
+        pt_BR: "Introdução"
+    },
     academic: {
         en_US: "Teachers",
         pt_BR: "Docentes"
     },
+	academicPerNewsItem: {
+		en_US: "Teachers",
+        pt_BR: "Docentes"
+	},
     profile: {
         en_US: "Profile",
         pt_BR: "Perfil"
@@ -35,7 +43,10 @@ myApp.constant("strings", {
         en_US: "Projects",
         pt_BR: "Projetos"
     },
-
+    projectsPerAcademic: {
+        en_US: "Projects",
+        pt_BR: "Projetos"
+    },
     positions: {
         en_US: "Positions",
         pt_BR: "Cargos"
@@ -52,12 +63,16 @@ myApp.constant("strings", {
         en_US: "Publication",
         pt_BR: "Publicação"
     },
+	newsPerAcademic: {
+        en_US: "News",
+        pt_BR: "Notícias"
+    },
     news: {
         en_US: "News",
         pt_BR: "Notícias"
     },
     newsItem: {
-        en_US: "News",
+        en_US: "Report",
         pt_BR: "Notícia"
     },
     orientations: {

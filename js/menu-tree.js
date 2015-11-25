@@ -5,9 +5,19 @@ myApp.constant("menuTree", {
             sparql: "",
             results: {
                 clickable: true,
-                menuMatch: "academic"
+                menuMatch: "intro"
             }
         },
+		intro: {
+			icon: "fa-home",
+			query: {
+				sparql: "",
+				results: {
+					clickable: false,
+					menuMatch: ""
+				}
+			}
+		},
         academic: {
             icon: "fa-users",
             query: {
@@ -51,7 +61,7 @@ myApp.constant("menuTree", {
                 }
 
             },
-            news: {
+            newsPerAcademic: {
                 icon: "fa-newspaper-o",
                 query: {
                     sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?doc cin:email '%%%' . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by ?title",
@@ -64,13 +74,22 @@ myApp.constant("menuTree", {
                     icon: "fa-newspaper-o",
                     query: {
                         sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where { <%%%> ?prop ?val FILTER isLiteral(?val)}",
-
                         results: {
                             clickable: false,
                             menuMatch: "none"
                         }
                     }
-                }
+                },
+					academicPerNewsItem: {
+						icon: "fa-user",
+						query: {
+							sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email . <%%%> cin:cite ?x } group by ?teacher order by ?teacher",
+							results: {
+								clickable: true,
+								menuMatch: "profile"
+							}
+						}
+					}
             },
             orientations: {
                 icon: "fa-users",
@@ -114,7 +133,7 @@ myApp.constant("menuTree", {
                     }
                 }
             },
-            projects: {
+            projectsPerAcademic: {
                 icon: "fa-gears",
                 query: {
                     sparql: "",
@@ -155,7 +174,27 @@ myApp.constant("menuTree", {
                 }
             }
 
-        }
+        },
+		projects: {
+			icon: "fa-gears",
+                query: {
+                    sparql: "",
+                    results: {
+                        clickable: true,
+                        menuMatch: "none"
+                    }
+                }
+		},
+		news:{
+			icon: "fa-newspaper-o",
+			query: {
+                    sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by ?date",
+                    results: {
+                        clickable: true,
+                        menuMatch: "newsItem"
+                    }
+                }
+		}
     }
 
 });
