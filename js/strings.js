@@ -94,5 +94,9 @@ myApp.constant("strings", {
 	chartGeneralPublications: {
 		en_US: "Publications x Year x Type",
         pt_BR: "Publicações x Ano x Tipo"
+	},
+	chartExpertiseAreas: {
+		en_US: "Teacher x Expertise Area",
+		pt_BR: "Professores x Área de Atuação"
 	}
 });

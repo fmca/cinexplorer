@@ -121,15 +121,16 @@ myApp.controller("ListCtrl",
                 menuMatch: "academic"
             }];
 
-		$scope.generateChart = function (menu){
+		$scope.generateChart = function (menu, queryValue){
 			
 			var menuTreeCharts = getAttribute(menu, "charts", menuTree);
-			
-			if(menuTreeCharts){
-				
+			$scope.menuHasChart = false;
+			if(menuTreeCharts){				
+				$scope.menuHasChart = true;
 				for(var j=0; j<menuTreeCharts.length; j++){
 					var title = $rootScope.getString(menuTreeCharts[j].id);
-					var sparqlQuery = menuTreeCharts[j].sparql;
+					var type = menuTreeCharts[j].type;
+					var sparqlQuery = (menuTreeCharts[j].sparql).split("%%%").join(queryValue);
 					//TODO chart type
 					query(
 					sparqlQuery,
@@ -148,14 +149,19 @@ myApp.controller("ListCtrl",
 								series.push(results[i].cat.value)
 							}
 						}
-						for(var i=0; i<series.length; i++){
-							data.push([]);
+						if(series.length > 1){
+							for(var i=0; i<series.length; i++){
+								data.push([]);
+							}
 						}
+						
 						for(var i=0; i<results.length; i++){
-							data[series.indexOf(results[i].cat.value)].push(results[i].y.value);
+							var pushIndex = series.length > 1 ? data[series.indexOf(results[i].cat.value)] : data;
+							pushIndex.push(results[i].y.value);
 						}
-						$scope.charts.push({title: title, labels: labels, series: series, data: data});
-						console.log("done", $scope.charts);
+						$scope.charts.push({title: title, type: type, labels: labels, series: series, data: data});
+						console.log($scope.charts);
+						$scope.$apply();
 					},
 					function(){console.log("generateChart query fail")});
 				}
@@ -173,7 +179,7 @@ myApp.controller("ListCtrl",
             $scope.filters.listFilter = "";
 			
 			$scope.charts = [];
-			$scope.generateChart(menu);
+			$scope.generateChart(menu, queryValue);
 
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);

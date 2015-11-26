@@ -30,7 +30,7 @@ myApp.constant("menuTree", {
 			charts: [
 				{
 					id: "chartGeneralPublications",
-					type: "bar",
+					type: "Line",
 					sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued} group by ?type ?issued order by ?issued"
 				}
 			],
@@ -53,6 +53,13 @@ myApp.constant("menuTree", {
                         menuMatch: "publication"
                     }
                 },
+				charts: [
+					{
+						id: "chartPublicationsPerAcademic",
+						type: "Line",
+						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . ?public cin:idProfessor ?academic . ?academic cin:email '%%%'} group by ?type ?issued order by ?issued"
+					}
+				],
                 publication: {
                     icon: "fa-file-text-o",
                     query: {
@@ -170,6 +177,13 @@ myApp.constant("menuTree", {
                     menuMatch: "academicPerArea"
                 }
             },
+			charts: [
+				{
+					id: "chartExpertiseAreas",
+					type: "Pie",
+					sparql: "select ?area as ?x count(distinct ?siape) as ?y ?eaType as ?cat where { ?x rdf:type cin:academic . ?ea rdf:type ?eaType. ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area . ?x cin:siape ?siape } order by ?y"
+				}
+			],
             academicPerArea: {
                 icon: "fa-users",
                 query: {
