@@ -16,6 +16,8 @@
         <script src="js/lib/angular.min.js"></script>
         <script src="js/lib/angular-cookes.min.js"></script>
         <script src="js/lib/angular-masonry.js"></script>
+		<script src="js/lib/Chart.min.js"></script>
+		<script src="js/lib/angular-chart.min.js"></script>
         <script src="js/modules.js" charset="utf-8"></script>
         <script src="js/strings.js" charset="utf-8"></script>
         <script src="js/menu-tree.js"  charset="utf-8"></script>
@@ -40,42 +42,29 @@
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="sr-only"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-
-                        <button type="button" class="btn btn-primary navbar-brand" aria-label="Left Align" ng-click="back()" ng-show="currentMenuStack.length > 1">
-                            <span class="fa fa-chevron-left" aria-hidden="true"></span>
-                            <!-- <a class="" href="#" ng-click="reload()">{{header}}</a> -->
-                        </button>
 
                     </div>
 
 
                     <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="menuClick(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> {{item.title}}</a>
+                        <ul class="nav navbar-nav" style="width:100%;">
+							<li>
+								<button type="button" class="btn btn-primary navbar-brand" aria-label="Left Align" ng-click="back()" ng-show="currentMenuStack.length > 1">
+									<span class="fa fa-chevron-left" aria-hidden="true"></span>
+									<!-- <a class="" href="#" ng-click="reload()">{{header}}</a> -->
+								</button>
+							</li>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="menuClick(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> <span class="hidden-xs">{{item.title}}</span></a>
                             </li>
-
-                        </ul>
-
-
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{lang.title}} <span class="caret"></span></a>
+							
+							 <li class="dropdown" style="float: right; display: block;">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{lang.abbreviation}} <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li ng-repeat="language in languages"><a href="#" ng-click="changeLanguage(language.abbreviation)">{{language.title}}</a>
                                     </li>
                                 </ul>
                             </li>
                         </ul>
-
-                    </div>
                     <!-- /.navbar-collapse -->
 
 
@@ -110,7 +99,7 @@
 						</p>
 						<p>
 							<button class="btn btn-default btn-md" ng-click="menuClick('academic', 'academic')">
-							Começar a explorar <span class="fa fa-search fa-flip-horizontal" aria-hidden="true"></span> 
+							Explorar dados <span class="fa fa-search fa-flip-horizontal" aria-hidden="true"></span> 
 							</button>
 						</p>
 					</div>
@@ -143,31 +132,58 @@
 
                 <div class="row" ng-if="selected.name != 'intro'">
 
+						<div class="row" ng-if="charts.length > 0">
+							<div class="col-md-12">
+								<div class="alert alert-info" role="alert"> <span class="fa fa-bar-chart"></span> <span class="fa fa-pie-chart"></span> Existem indicadores sobre esses dados. 
+									<a data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+									  Clique aqui para ver
+									</a>
+								</div>
+							</div>
+						</div>
+						
 						<div class="row">
-                        <div ng-class="groups.length <= 1 ? 'col-md-12' : 'col-md-8'">
-                            <div id="filter-box" class="input-group filter-box">
-                                <span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: listFilter).length}}</span> <span id="content-desc" style="margin-left: 5px"> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded"> <b> {{header}}</b></span> </span></span>
-                                <input type="text" id="filter" class="form-control" ng-model="listFilter">
-                                <span class="input-group-addon"> <i class="fa fa-search"></i> </span>
-                            </div>
-                        </div>
-                        <div class="col-sm-4 col-md-4">
-                            <div class="row">
-                                <div ng-repeat="group in groups | filter: showGroupFilter" class="col-lg-3">
-                                    <div class="checkbox checkbox-primary form-group">
-                                        <input type="checkbox" id="group-{{group}}" checked ng-click="toggleGroup(group)" />
-                                        <label for="group-{{group}}">
-                                            {{group}}
-                                        </label>
-                                    </div>
+							<div class="col-md-12">
+								<div class="collapse" id="charts">
+									<div class="panel panel-default" ng-repeat="chart in charts">
+										<div class="panel-heading">
+											{{chart.title}}
+										</div>
+										<div class="panel-body">
+											<canvas class="chart chart-bar"
+												chart-data="chart.data" chart-labels="chart.labels" chart-series="chart.series" chart-legend="true" chart-options="{animation: false}">
+											</canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div ng-class="groups.length <= 1 ? 'col-md-12' : 'col-md-8'">
+								<div id="filter-box" class="input-group filter-box">
+									<span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: filters.listFilter).length}}</span> <span id="content-desc" style="margin-left: 5px"> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded"> <b> {{header}}</b></span> </span></span>
+									<input type="text" id="filter" class="form-control" ng-model="filters.listFilter" value=""/>
+									<span class="input-group-addon"> <i class="fa fa-search"></i> </span>
+								</div>
+							</div>						
+							<div class="col-sm-4 col-md-4">
+								<div class="row">
+									<div ng-repeat="group in groups | filter: showGroupFilter" class="col-lg-3">
+										<div class="checkbox checkbox-primary form-group">
+											<input type="checkbox" id="group-{{group}}" checked ng-click="toggleGroup(group)" />
+											<label for="group-{{group}}">
+												{{group}}
+											</label>
+										</div>
 
-                                </div>
-                            </div>
-                        </div>
+									</div>
+								</div>
+							</div>
 						</div>
 							<div class="row" masonry="{transitionDuration: 0}" load-images="false">
 								
-								<div class="col-lg-4 col-sm-6 col-md-4 col-xs-12 masonry-brick" ng-show="listLoaded" ng-repeat="result in ( (data | filter: groupFilter) | filter: listFilter)">
+								<div class="col-lg-4 col-sm-6 col-md-4 col-xs-12 masonry-brick" ng-show="listLoaded" ng-repeat="result in ( (data | filter: groupFilter) | filter: filters.listFilter)">
 									<div class="panel panel-default results" ng-mouseleave="hover = false" ng-disabled="!result.clickable" ng-click="!result.clickable || listItemClick(result.queryValue, result.menuMatch, result.title == undefined ? result.desc : result.title)" ng-class="{'clickable': result.clickable, 'panel-default': (!hover || !result.clickable), 'panel-primary': (hover && result.clickable)}" ng-mouseenter="hover = true">
 										<div class="panel-heading" ng-show="shouldShow('{{result.title}}')">
 											<b>{{result.title}}</b>

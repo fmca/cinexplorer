@@ -24,9 +24,16 @@ myApp.constant("menuTree", {
                 sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
                 results: {
                     clickable: true,
-                    menuMatch: "profile"
+                    menuMatch: "profile",
                 }
             },
+			charts: [
+				{
+					id: "chartGeneralPublications",
+					type: "bar",
+					sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued} group by ?type ?issued order by ?issued"
+				}
+			],
             profile: {
                 icon: "fa-user",
                 query: {
