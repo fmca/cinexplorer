@@ -1,23 +1,6 @@
-myApp.factory('focus', function ($timeout) {
-    return function (id) {
-        // timeout makes sure that is invoked after any other event has been triggered.
-        // e.g. click events that need to run before the focus or
-        // inputs elements that are in a disabled state but are enabled when those events
-        // are triggered.
-        $timeout(function () {
-
-            var element = document.getElementById(id);
-            if (element)
-                element.focus();
-        });
-    };
-});
-
-
 myApp.filter('toHtml', function ($sce) {
     return $sce.trustAsHtml;
 });
-
 
 myApp.controller("LanguageCtrl",
     function ($scope, $rootScope, $cookieStore, strings) {
@@ -79,13 +62,20 @@ myApp.controller("LanguageCtrl",
 /****************************ListCtrl******************************************/
 /******************************************************************************/
 myApp.controller("ListCtrl",
-    function ($scope, $rootScope, menuTree, focus) {
-        focus("filter");
+    function ($scope, $rootScope, menuTree) {
 
-
-
-
-
+	$scope.charts = [
+		/*{
+			title: "Test",
+			labels: ['2006', '2007', '2008', '2009', '2010', '2011', '2012'],
+			series: ['Series A', 'Series B'],
+			data: [
+				[65, 59, 80, 81, 56, 55, 40],
+				[28, 48, 40, 19, 86, 27, 90]
+			]
+		}*/
+	]
+  
         $scope.showGroupFilter = function (groupName) {
             if (groupName != 'none') return groupName;
         }
@@ -116,6 +106,9 @@ myApp.controller("ListCtrl",
 
             return;
         }
+		
+		$scope.filters = {};
+		$scope.filters.listFilter = "";
 
 
         $scope.data = [
@@ -128,15 +121,59 @@ myApp.controller("ListCtrl",
                 menuMatch: "academic"
             }];
 
+		$scope.generateChart = function (menu){
+			
+			var menuTreeCharts = getAttribute(menu, "charts", menuTree);
+			
+			if(menuTreeCharts){
+				
+				for(var j=0; j<menuTreeCharts.length; j++){
+					var title = $rootScope.getString(menuTreeCharts[j].id);
+					var sparqlQuery = menuTreeCharts[j].sparql;
+					//TODO chart type
+					query(
+					sparqlQuery,
+					"json",
+					function(response){
+						var json = JSON.parse(response);
+						var results = (json.results.bindings);
+						var labels = []
+						var series = []
+						var data = []
+						for(var i=0; i<results.length; i++){
+							if(labels.indexOf(results[i].x.value) == -1){
+								labels.push(results[i].x.value)
+							}
+							if(series.indexOf(results[i].cat.value) == -1){
+								series.push(results[i].cat.value)
+							}
+						}
+						for(var i=0; i<series.length; i++){
+							data.push([]);
+						}
+						for(var i=0; i<results.length; i++){
+							data[series.indexOf(results[i].cat.value)].push(results[i].y.value);
+						}
+						$scope.charts.push({title: title, labels: labels, series: series, data: data});
+						console.log("done", $scope.charts);
+					},
+					function(){console.log("generateChart query fail")});
+				}
+				
+			}
+			
+			
+		}
+		
         $rootScope.$on("requestList", function (event, queryValue, menu, strings) {
-
-
-
             $scope.groups = [];
             $scope.selectedGroups = [];
 
             $rootScope.listLoaded = false;
-            $scope.listFilter = "";
+            $scope.filters.listFilter = "";
+			
+			$scope.charts = [];
+			$scope.generateChart(menu);
 
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
@@ -229,7 +266,6 @@ myApp.controller("ListCtrl",
         $scope.listItemClick = function (queryValue, menuMatch, nextHeaderTitle) {
             $rootScope.$emit("menuChangeEvent", queryValue, menuMatch, nextHeaderTitle);
             $rootScope.$emit("requestList", queryValue, $rootScope.selected.name);
-
         }
 
 
@@ -286,7 +322,7 @@ myApp.controller("MenuCtrl",
 
             var changedSelected = false;
             for (var key in parent) {
-                if (key != "title" && key != "query" && key != "icon") {
+                if (key != "title" && key != "query" && key != "icon" && key!="charts") {
                     if (!changedSelected) {
                         //console.log("childMenu: ", key, childMenu);
                         changedSelected = true;
@@ -345,18 +381,16 @@ myApp.controller("MenuCtrl",
                 }
             }
         }
-
-        focus("filter");
-
-
     });
 
 
 /******************************************************************************/
 /****************************Other Functions***********************************/
 /******************************************************************************/
-
-
+ 
+function clearElem(element){
+		$(element).val('')
+}
 function getAttribute(level, attribute, obj) {
     if (level == "home") return "Home";
     for (var i in obj) {
@@ -419,3 +453,4 @@ function getParent(key, tree){
 var last = function (array) {
     return array[array.length - 1];
 }
+
