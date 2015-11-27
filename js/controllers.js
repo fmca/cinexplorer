@@ -149,23 +149,15 @@ myApp.controller("ListCtrl",
 						if(series.length > 1){
 							for(var i=0; i<series.length; i++){
 								data.push([]);
+								for(k=0; k<labels.length; k++){
+									data[i].push(0);
+								}
 							}
 						}
 						
 						for(var i=0; i<results.length; i++){
-							
-							if(series.length > 1){
-								var index = series.indexOf(removeNamespace(results[i].cat));
-								for(var k=0; k<series.length; k++){
-									if(k==index){
-										data[k].push(removeNamespace(results[i].y));
-									}else{
-										data[k].push("0");
-									}
-								}
-							}else{
-								data.push(removeNamespace(results[i].y))
-							}
+							var pushIndex = series.length > 1 ? data[series.indexOf(removeNamespace(results[i].cat))] : data;
+							pushIndex[labels.indexOf(removeNamespace(results[i].x))] = removeNamespace(results[i].y);
 						}
 						$scope.charts.push({title: title, type: type, labels: labels, series: series, data: data});
 						console.log("charts", $scope.charts)

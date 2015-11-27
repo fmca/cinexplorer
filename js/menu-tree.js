@@ -31,7 +31,7 @@ myApp.constant("menuTree", {
 				{
 					id: "chartGeneralPublications",
 					type: "Line",
-					sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued} group by ?type ?issued order by ?issued"
+					sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 				}
 			],
             profile: {
@@ -57,7 +57,7 @@ myApp.constant("menuTree", {
 					{
 						id: "chartPublicationsPerAcademic",
 						type: "Line",
-						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . ?public cin:idProfessor ?academic . ?academic cin:email '%%%'} group by ?type ?issued order by ?issued"
+						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . ?public cin:idProfessor ?id . ?id cin:email '%%%' . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 					}
 				],
                 publication: {
@@ -229,7 +229,7 @@ myApp.constant("menuTree", {
 				{
 						id: "chartGeneralPublications",
 						type: "Line",
-						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued} group by ?type ?issued order by ?issued"
+						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 				},
 				{
 					id: "chartExpertiseAreas",
@@ -244,7 +244,7 @@ myApp.constant("menuTree", {
 				{
 					id: "chartGeneralOrientations",
 					type: "Line",
-					sparql: "select count(distinct ?tese) as ?y ?year as ?x ?type as ?cat where { ?tese cin:student ?aluno . ?tese rdf:type ?type . ?tese cin:year ?year } group by ?year ?type order by ?year"
+					sparql: "select count(distinct ?tese) as ?y ?year as ?x ?type as ?cat where { ?tese cin:student ?aluno . ?tese rdf:type ?type . ?tese cin:year ?year . FILTER (xsd:integer(?year) > 1999)} group by ?year ?type order by ?year"
 				}
 				
 			]
