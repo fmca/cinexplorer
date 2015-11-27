@@ -120,17 +120,14 @@ myApp.controller("ListCtrl",
                 queryValue: "",
                 menuMatch: "academic"
             }];
-
-		$scope.generateChart = function (menu, queryValue){
 			
-			var menuTreeCharts = getAttribute(menu, "charts", menuTree);
-			$scope.menuHasChart = false;
-			if(menuTreeCharts){				
-				$scope.menuHasChart = true;
-				for(var j=0; j<menuTreeCharts.length; j++){
-					var title = $rootScope.getString(menuTreeCharts[j].id);
-					var type = menuTreeCharts[j].type;
-					var sparqlQuery = (menuTreeCharts[j].sparql).split("%%%").join(queryValue);
+		$scope.generateEachChart = function(count, menuTreeCharts, queryValue){
+			
+			if(count < menuTreeCharts.length){
+				var title = $rootScope.getString(menuTreeCharts[count].id);
+					var type = menuTreeCharts[count].type;
+					var sparqlQuery = (menuTreeCharts[count].sparql).split("%%%").join(queryValue);
+					console.log("query", menuTreeCharts[count])
 					//TODO chart type
 					query(
 					sparqlQuery,
@@ -142,11 +139,11 @@ myApp.controller("ListCtrl",
 						var series = []
 						var data = []
 						for(var i=0; i<results.length; i++){
-							if(labels.indexOf(results[i].x.value) == -1){
-								labels.push(results[i].x.value)
+							if(labels.indexOf(removeNamespace(results[i].x)) == -1){
+								labels.push(removeNamespace(results[i].x))
 							}
-							if(series.indexOf(results[i].cat.value) == -1){
-								series.push(results[i].cat.value)
+							if(results[i].cat != undefined && series.indexOf(removeNamespace(results[i].cat)) == -1){
+								series.push(removeNamespace(results[i].cat))
 							}
 						}
 						if(series.length > 1){
@@ -156,15 +153,42 @@ myApp.controller("ListCtrl",
 						}
 						
 						for(var i=0; i<results.length; i++){
-							var pushIndex = series.length > 1 ? data[series.indexOf(results[i].cat.value)] : data;
-							pushIndex.push(results[i].y.value);
+							
+							if(series.length > 1){
+								var index = series.indexOf(removeNamespace(results[i].cat));
+								for(var k=0; k<series.length; k++){
+									if(k==index){
+										data[k].push(removeNamespace(results[i].y));
+									}else{
+										data[k].push("0");
+									}
+								}
+							}else{
+								data.push(removeNamespace(results[i].y))
+							}
 						}
 						$scope.charts.push({title: title, type: type, labels: labels, series: series, data: data});
-						console.log($scope.charts);
-						$scope.$apply();
+						console.log("charts", $scope.charts)
+						
+						if(++count < menuTreeCharts.length){
+							$scope.generateEachChart(count, menuTreeCharts);
+						}else{
+							$scope.$apply();
+						}
+						
 					},
 					function(){console.log("generateChart query fail")});
-				}
+			}
+			
+		}
+
+		$scope.generateCharts = function (menu, queryValue){
+			
+			var menuTreeCharts = getAttribute(menu, "charts", menuTree);
+			$scope.menuHasChart = false;
+			if(menuTreeCharts){				
+				$scope.menuHasChart = true;
+				$scope.generateEachChart(0, menuTreeCharts, queryValue)
 				
 			}
 			
@@ -179,7 +203,7 @@ myApp.controller("ListCtrl",
             $scope.filters.listFilter = "";
 			
 			$scope.charts = [];
-			$scope.generateChart(menu, queryValue);
+			$scope.generateCharts(menu, queryValue);
 
             $scope.querySuccess = function (response) {
                 var json = JSON.parse(response);
@@ -192,16 +216,6 @@ myApp.controller("ListCtrl",
                     menuMatch = [],
                     group = [];
 
-                var removeNamespace = function (item) {
-                    if (item && item.hasOwnProperty("value")) {
-                        var namespace = "http://www.cin.ufpe.br/opencin/";
-                        item = item.value;
-                        item = item.replace(namespace, "");
-                        return item.charAt(0).toUpperCase() + item.slice(1);;
-                    }
-                    return item;
-
-                }
                 for (var i = 0; i < results.length; i++) {
 
                     title[i] = removeNamespace(results[i].title);
@@ -412,6 +426,17 @@ function getAttribute(level, attribute, obj) {
         }
     }
 }
+
+var removeNamespace = function (item) {
+                    if (item && item.hasOwnProperty("value")) {
+                        var namespace = "http://www.cin.ufpe.br/opencin/";
+                        item = item.value;
+                        item = item.replace(namespace, "");
+                        return item.charAt(0).toUpperCase() + item.slice(1);;
+                    }
+                    return item;
+
+                }
 
 function getQuery(key, obj) {
 

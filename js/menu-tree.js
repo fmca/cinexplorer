@@ -108,7 +108,7 @@ myApp.constant("menuTree", {
             orientations: {
                 icon: "fa-users",
                 query: {
-                    sparql: "SELECT DISTINCT ?nome as ?title fn:concat(?titulo, fn:concat('. ', ?semester)) as ?desc ?tese as ?queryValue ?t as ?group WHERE { ?tese rdf:type ?t . ?prof cin:email '%%%'. ?aluno cin:isSupervisedBy ?prof . ?aluno cin:creator ?tese . ?tese cin:title ?titulo . ?aluno cin:name ?nome . ?aluno cin:email ?emailAluno . OPTIONAL {?tese cin:semester ?semester} }",
+                    sparql: "select distinct ?aluno as ?title ?t as ?desc ?tese as ?queryValue where { ?tese cin:title ?t . ?tese cin:student ?aluno . ?tese cin:year ?year . ?tese cin:idProfessor ?prof . ?prof cin:email '%%%' } order by ?year",
                     results: {
                         clickable: true,
                         menuMatch: "thesis"
@@ -215,6 +215,39 @@ myApp.constant("menuTree", {
                         menuMatch: "newsItem"
                     }
                 }
+		},
+		indicators:{
+			icon: "fa-bar-chart",
+			query: {
+				sparql: "select ?x as ?title ?x as ?desc ?x as ?queryValue where {?x ?y ?z} limit 1",
+				results: {
+					clickable: false,
+					menuMatch: ""
+				}
+			},
+			charts: [
+				{
+						id: "chartGeneralPublications",
+						type: "Line",
+						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued} group by ?type ?issued order by ?issued"
+				},
+				{
+					id: "chartExpertiseAreas",
+					type: "Pie",
+					sparql: "select ?area as ?x count(distinct ?siape) as ?y where { ?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area . ?x cin:siape ?siape } order by ?y"
+				},
+				{
+					id: "chartOrientationTypes",
+					type: "Doughnut",
+					sparql: "select count(distinct ?tese) as ?y ?type as ?x where { ?tese cin:student ?aluno . ?tese rdf:type ?type } group by ?type"
+				},
+				{
+					id: "chartGeneralOrientations",
+					type: "Line",
+					sparql: "select count(distinct ?tese) as ?y ?year as ?x ?type as ?cat where { ?tese cin:student ?aluno . ?tese rdf:type ?type . ?tese cin:year ?year } group by ?year ?type order by ?year"
+				}
+				
+			]
 		}
     }
 

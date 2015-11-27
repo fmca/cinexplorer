@@ -91,6 +91,10 @@ myApp.constant("strings", {
         en_US: "Expertise Areas",
         pt_BR: "Áreas de Atuação"
     },
+	indicators: {
+		en_US: "Indicators",
+		pt_BR: "Indicadores"
+	},
 	chartGeneralPublications: {
 		en_US: "Publications x Year x Type",
         pt_BR: "Publicações x Ano x Tipo"
@@ -98,5 +102,13 @@ myApp.constant("strings", {
 	chartExpertiseAreas: {
 		en_US: "Teacher x Expertise Area",
 		pt_BR: "Professores x Área de Atuação"
+	},
+	chartOrientationTypes: {
+		en_US: "Orientations x Type",
+		pt_BR: "Orientações x Tipo"
+	},
+	chartGeneralOrientations: {
+		en_US: "Orientations x Year",
+		pt_BR: "Orientações x Ano"
 	}
 });

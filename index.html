@@ -131,24 +131,27 @@
 
             <div ng-controller="ListCtrl">
 
-                <div class="row" ng-if="selected.name != 'intro'">
-
-						<div class="row" ng-if="menuHasChart">
-							<div class="col-md-12">
-								<div class="alert alert-info" role="alert"> <span class="fa fa-bar-chart"></span> <span class="fa fa-pie-chart"></span> Existem indicadores sobre esses dados. 
+				<div class="row">
+					<div class="row" ng-if="menuHasChart">
+						<div class="col-md-12">
+							<div class="alert alert-info" role="alert"> <span class="fa fa-bar-chart"></span> <span class="fa fa-pie-chart"></span>
+								<span ng-if="selected.name != 'indicators'"> Existem indicadores sobre esses dados. 
 									<a ng-if="charts.length > 0" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-									  Clique aqui para ver
+									  Clique aqui para alternar visualização
 									</a>
-									<span ng-if="charts.length == 0" style="margin-left: 10px"><i class="results fa fa-refresh fa-spin"></i></span>
-									
-								</div>
+								</span>
+								<span ng-if="selected.name == 'indicators'">
+									Indicadores gerais da instituição
+								</span>
+								<span ng-if="charts.length == 0" style="margin-left: 10px"><i class="results fa fa-refresh fa-spin"></i></span>
+								
 							</div>
 						</div>
-						
-						<div class="row">
-							<div class="col-md-6">
-								<div class="collapse" id="charts">
-									<div class="panel panel-default" ng-repeat="chart in charts">
+					</div>
+					<div class="row">
+							<div ng-class="selected.name == 'indicators' ? 'collapse.in' : 'collapse'" id="charts">
+								<div class="col-md-6" ng-repeat="chart in charts">
+									<div class="panel panel-default">
 										<div class="panel-heading">
 											{{chart.title}}
 										</div>
@@ -161,7 +164,10 @@
 									</div>
 								</div>
 							</div>
-						</div>
+					</div>
+				</div>
+						
+                <div class="row" ng-if="selected.name != 'intro' && selected.name != 'indicators'">
 						
 						<div class="row">
 							<div ng-class="groups.length <= 1 ? 'col-md-12' : 'col-md-8'">
