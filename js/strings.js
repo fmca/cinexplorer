@@ -55,9 +55,9 @@ myApp.constant("strings", {
         en_US: "Areas of Expertise",
         pt_BR: "Áreas de Atuação"
     },
-    interestAreas: {
-        en_US: "Areas of Interest",
-        pt_BR: "Áreas de Interesse"
+    linesOfWork: {
+        en_US: "Lines of Work",
+        pt_BR: "Linhas de Pesquisa"
     },
     publication: {
         en_US: "Publication",
@@ -110,5 +110,37 @@ myApp.constant("strings", {
 	chartGeneralOrientations: {
 		en_US: "Orientations x Year",
 		pt_BR: "Orientações x Ano"
+	},
+	wordCloudExpertiseAreas: {
+		en_US: "Expertise Areas",
+		pt_BR: "Áreas de Atuação"
+	},
+	about:{
+		en_US: "About",
+		pt_BR: "Sobre"
+	},
+	contributors:{
+		en_US: "Contributors",
+		pt_BR: "Contribuidores"
+	},
+	opencin_text:{
+		en_US: "CIn-related information is now available to the public through an infrastructure that supports semantic web concepts and tools. All data are in accordance to our <a href='http://www.cin.ufpe.br/~opencin/ontology/' data-toggle='tooltip' title='See ontology details'><u>ontology</u></a> that describes the academic environment which the CIn-UFPE is part of, particularly teachers and related entities. From here, you can find out: lines of work, as well as lected courses, publications, event participations and active projects. <br><br>You can access all data by using this interface or sending SPARQL queries to our  <a href='http://webproj04.cin.ufpe.br/sparql/' data-toggle='tooltip' title='Go to SPARQL endpoint'><u>endpoint</u></a>.",
+		pt_BR: "Informações relacionadas ao CIn agora estão disponíveis ao público geral através de uma infra-estrutura de suporte à Web Semântica. Os dados foram modelados através de uma <a href='http://www.cin.ufpe.br/~opencin/ontology/' data-toggle='tooltip' title='Ver descrição da ontologia'><u>ontologia</u></a> que descreve o ambiente acadêmico pelo qual o CIn-UFPE está imerso, essencialmente focada nos docentes e entidades relacionadas. Dela são extraídas as linhas de pesquisa de cada professor, bem como as disciplinas por ele lecionadas, suas publicações, participações em eventos e os projetos que ele faz parte. <br><br>O acesso ao dados pode ser feito através desta interface Web ou de consultas SPARQL sob o <a href='http://webproj04.cin.ufpe.br/sparql/' data-toggle='tooltip' title='Ir para o endpoint SPARQL'><u>endpoint</u></a> do OpenCIn."
+	},
+	explore:{
+		en_US: "Explore data",
+		pt_BR: "Explorar dados"
+	},
+	thereAreCharts:{
+		en_US: "There are some charts generated from this data.",
+		pt_BR: "Existem indicadores sobre esses dados."
+	},
+	toggleChartsView:{
+		en_US: "Click here to toggle visibility",
+		pt_BR: "Clique aqui para alternar visualização"
+	},
+	generalIndicators:{
+		en_US: "Intitute indicators",
+		pt_BR: "Indicadores gerais da instituição"
 	}
 });

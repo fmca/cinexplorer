@@ -30,6 +30,7 @@ myApp.constant("menuTree", {
 			charts: [
 				{
 					id: "chartGeneralPublications",
+					category: "graph",
 					type: "Line",
 					sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 				}
@@ -78,7 +79,7 @@ myApp.constant("menuTree", {
             newsPerAcademic: {
                 icon: "fa-newspaper-o",
                 query: {
-                    sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?doc cin:email '%%%' . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by ?title",
+                    sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?doc cin:email '%%%' . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by desc(?title)",
                     results: {
                         clickable: true,
                         menuMatch: "newsItem"
@@ -137,7 +138,7 @@ myApp.constant("menuTree", {
                 }
 
             },
-            interestAreas: {
+            linesOfWork: {
                 icon: "fa-heart",
                 query: {
                     sparql: "select distinct ?ianame as ?desc ?ia as ?queryValue where {?x cin:email '%%%' . ?x rdf:type cin:academic . ?x cin:hasAreaInterest ?ia . ?ia cin:name ?ianame} group by ?ianame order by ?desc",
@@ -157,7 +158,7 @@ myApp.constant("menuTree", {
                     }
                 }
             },
-            positions: {
+            /*positions: {
                 icon: "fa-suitcase",
                 query: {
                     sparql: "",
@@ -166,7 +167,7 @@ myApp.constant("menuTree", {
                         menuMatch: "none"
                     }
                 }
-            }
+            }*/
         },
         expertiseAreas: {
             icon: "fa-graduation-cap",
@@ -179,7 +180,13 @@ myApp.constant("menuTree", {
             },
 			charts: [
 				{
+						id: "wordCloudExpertiseAreas",
+						category: "wordCloud",
+						sparql: "select ?area as ?x count(distinct ?x) as ?y where { ?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area } group by ?area order by ?y"
+				},
+				{
 					id: "chartExpertiseAreas",
+					category: "graph",
 					type: "Pie",
 					sparql: "select ?area as ?x count(distinct ?siape) as ?y ?eaType as ?cat where { ?x rdf:type cin:academic . ?ea rdf:type ?eaType. ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area . ?x cin:siape ?siape } order by ?y"
 				}
@@ -209,7 +216,7 @@ myApp.constant("menuTree", {
 		news:{
 			icon: "fa-newspaper-o",
 			query: {
-                    sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by ?date",
+                    sparql: "select ?date as ?title ?tit as ?desc ?not as ?queryValue where {?not cin:cite ?doc . ?not cin:date ?date . ?not cin:title ?tit} group by ?title order by desc(?date)",
                     results: {
                         clickable: true,
                         menuMatch: "newsItem"
@@ -227,22 +234,31 @@ myApp.constant("menuTree", {
 			},
 			charts: [
 				{
+						id: "wordCloudExpertiseAreas",
+						category: "wordCloud",
+						sparql: "select ?area as ?x count(distinct ?x) as ?y where { ?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area } group by ?area order by ?y"
+				},
+				{
 						id: "chartGeneralPublications",
+						category: "graph",
 						type: "Line",
 						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 				},
 				{
 					id: "chartExpertiseAreas",
+					category: "graph",
 					type: "Pie",
 					sparql: "select ?area as ?x count(distinct ?siape) as ?y where { ?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area . ?x cin:siape ?siape } order by ?y"
 				},
 				{
 					id: "chartOrientationTypes",
+					category: "graph",
 					type: "Doughnut",
 					sparql: "select count(distinct ?tese) as ?y ?type as ?x where { ?tese cin:student ?aluno . ?tese rdf:type ?type } group by ?type"
 				},
 				{
 					id: "chartGeneralOrientations",
+					category: "graph",
 					type: "Line",
 					sparql: "select count(distinct ?tese) as ?y ?year as ?x ?type as ?cat where { ?tese cin:student ?aluno . ?tese rdf:type ?type . ?tese cin:year ?year . FILTER (xsd:integer(?year) > 1999)} group by ?year ?type order by ?year"
 				}

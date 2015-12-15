@@ -126,8 +126,9 @@ myApp.controller("ListCtrl",
 			if(count < menuTreeCharts.length){
 				var title = $rootScope.getString(menuTreeCharts[count].id);
 					var type = menuTreeCharts[count].type;
+					var category  = menuTreeCharts[count].category;
 					var sparqlQuery = (menuTreeCharts[count].sparql).split("%%%").join(queryValue);
-					console.log("query", menuTreeCharts[count])
+					//console.log("query", menuTreeCharts[count])
 					//TODO chart type
 					query(
 					sparqlQuery,
@@ -135,32 +136,52 @@ myApp.controller("ListCtrl",
 					function(response){
 						var json = JSON.parse(response);
 						var results = (json.results.bindings);
-						var labels = []
-						var series = []
-						var data = []
-						for(var i=0; i<results.length; i++){
-							if(labels.indexOf(removeNamespace(results[i].x)) == -1){
-								labels.push(removeNamespace(results[i].x))
-							}
-							if(results[i].cat != undefined && series.indexOf(removeNamespace(results[i].cat)) == -1){
-								series.push(removeNamespace(results[i].cat))
-							}
-						}
-						if(series.length > 1){
-							for(var i=0; i<series.length; i++){
-								data.push([]);
-								for(k=0; k<labels.length; k++){
-									data[i].push(0);
+						
+						if(category == 'graph'){
+							var labels = []
+							var series = []
+							var data = []
+							for(var i=0; i<results.length; i++){
+								if(labels.indexOf(removeNamespace(results[i].x)) == -1){
+									labels.push(removeNamespace(results[i].x))
+								}
+								if(results[i].cat != undefined && series.indexOf(removeNamespace(results[i].cat)) == -1){
+									series.push(removeNamespace(results[i].cat))
 								}
 							}
+							if(series.length > 1){
+								for(var i=0; i<series.length; i++){
+									data.push([]);
+									for(k=0; k<labels.length; k++){
+										data[i].push(0);
+									}
+								}
+							}
+							
+							for(var i=0; i<results.length; i++){
+								var pushIndex = series.length > 1 ? data[series.indexOf(removeNamespace(results[i].cat))] : data;
+								pushIndex[labels.indexOf(removeNamespace(results[i].x))] = removeNamespace(results[i].y);
+							}
+							$scope.charts.push({title: title, category: category, type: type, labels: labels, series: series, data: data});
+							console.log("charts", $scope.charts)
+							
+						}else if(category == 'wordCloud'){
+							var cloud = [];
+							var totalWeight = 0;
+							for(var i=0; i<results.length; i++){
+								var word = removeNamespace(results[i].x);
+								var weight = parseInt(results[i].y.value);
+								totalWeight += weight;
+								cloud.push({text: word, weight: weight});
+							}
+							
+							
+							console.log("cloud: ", cloud)
+							console.log(totalWeight);
+							
+							$scope.charts.push({title: title, category: category, cloud: cloud, totalWeight: totalWeight})
 						}
 						
-						for(var i=0; i<results.length; i++){
-							var pushIndex = series.length > 1 ? data[series.indexOf(removeNamespace(results[i].cat))] : data;
-							pushIndex[labels.indexOf(removeNamespace(results[i].x))] = removeNamespace(results[i].y);
-						}
-						$scope.charts.push({title: title, type: type, labels: labels, series: series, data: data});
-						console.log("charts", $scope.charts)
 						
 						if(++count < menuTreeCharts.length){
 							$scope.generateEachChart(count, menuTreeCharts);
@@ -292,10 +313,14 @@ myApp.controller("ListCtrl",
 /******************************************************************************/
 
 myApp.controller("MenuCtrl",
-    function ($scope, $rootScope, $window, menuTree) {
+    function ($scope, $rootScope, $window, menuTree, $location) {
 
+	
+	/*$rootScope.$on("$locationChangeStart", function(args){
+		console.log("test");
+	})*/
 
-
+		
 
         /*Current menu handling*/
         /*{
@@ -309,6 +334,8 @@ myApp.controller("MenuCtrl",
 
         $rootScope.$on("menuChangeEvent", function (event, queryValue, menu, headerTitle) {
 
+		//$location.url('/test/year/' + new Date());
+		console.log($location.url())
 
             $scope.currentMenuStack.push({
                 header: headerTitle,

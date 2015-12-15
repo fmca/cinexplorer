@@ -10,6 +10,7 @@
         <link href="css/lib/bootstrap.min.css" rel="stylesheet" />
         <link href="css/lib/awesome-bootstrap-checkbox.css" rel="stylesheet" />
 		<link href="css/lib/angular-chart.min.css" rel="stylesheet" />
+		<link href="css/lib/jqcloud.min.css" rel="stylesheet" />
 
         <script src="js/lib/jquery-1.11.1.min.js"></script>
         <script src="js/lib/bootstrap.min.js"></script>
@@ -22,6 +23,8 @@
         <script src="js/lib/angular-masonry.js"></script>
 		<script src="js/lib/Chart.min.js"></script>
 		<script src="js/lib/angular-chart.min.js"></script>
+		<script src="js/lib/jqcloud.min.js"></script>
+		<script src="js/lib/angular-jqcloud.js"></script>
         <script src="js/modules.js" charset="utf-8"></script>
         <script src="js/strings.js" charset="utf-8"></script>
         <script src="js/menu-tree.js"  charset="utf-8"></script>
@@ -94,16 +97,10 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading hero"><h3>OpenCIn</h3></div>
 					<div class="panel-body">
-						<p>Informações relacionadas ao CIn agora estão disponíveis ao público geral através de uma infra-estrutura de suporte à Web Semântica. 
-						Os dados foram modelados através de uma <a href="http://www.cin.ufpe.br/~opencin/ontology/" data-toggle="tooltip" title="Ver descrição da ontologia"><u>ontologia</u></a> que descreve o ambiente acadêmico pelo qual
-						o CIn-UFPE está imerso, essencialmente focada nos docentes e entidades relacionadas. Dela são extraídas as áreas de interesse de cada professor, 
-						bem como as disciplinas por ele lecionadas, suas publicações, participações em eventos e os projetos que ele faz parte. 
-						</p>
-						<p>O acesso ao dados pode ser feito através desta interface Web ou de consultas SPARQL sob o <a href="http://webproj04.cin.ufpe.br/sparql/" data-toggle="tooltip" title="Ir para o endpoint SPARQL"><u>endpoint</u></a> do OpenCIn.
-						</p>
+						<p ng-bind-html="getString('opencin_text') | toHtml"></p>
 						<p>
 							<button class="btn btn-default btn-md" ng-click="menuClick('academic', 'academic')">
-							Explorar dados <span class="fa fa-search fa-flip-horizontal" aria-hidden="true"></span> 
+							{{getString('explore')}} <span class="fa fa-search fa-flip-horizontal" aria-hidden="true"></span> 
 							</button>
 						</p>
 					</div>
@@ -115,8 +112,10 @@
 					</script>
 				</div>
 				<div class="panel panel-default">
-					<div class="panel-heading hero"><h3>Contribuidores</h3></div>
-					<div class="panel-body">
+					<div class="panel-heading hero" data-toggle="collapse" data-target="#cont-body"><a href="#"  style="text-decoration: none;"> <h4><span class="fa fa-chevron-down pull-left"></span>{{getString("about")}}</h4> </a></div>
+					<div id="cont-body" class="panel-body collapse">
+						<h4>{{getString("contributors")}}</h4>
+						<br>
 						<table class="table">
 						<thead> <tr><th>Professores</th></tr></thead>
 						<tbody> <tr><td>Bernadette Lóscio</td><td>bfl@cin.ufpe.br</td></tr> </tbody>
@@ -138,13 +137,13 @@
 					<div class="row" ng-if="menuHasChart">
 						<div class="col-md-12">
 							<div class="alert alert-info" role="alert"> <span class="fa fa-bar-chart"></span> <span class="fa fa-pie-chart"></span>
-								<span ng-if="selected.name != 'indicators'"> Existem indicadores sobre esses dados. 
+								<span ng-if="selected.name != 'indicators'"> {{getString("thereAreCharts")}}
 									<a ng-if="charts.length > 0" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
-									  Clique aqui para alternar visualização
+										{{getString("toggleChartsView")}}
 									</a>
 								</span>
 								<span ng-if="selected.name == 'indicators'">
-									Indicadores gerais da instituição
+									{{getString("generalIndicators")}}
 								</span>
 								<span ng-if="charts.length == 0" style="margin-left: 10px"><i class="results fa fa-refresh fa-spin"></i></span>
 								
@@ -159,10 +158,13 @@
 											{{chart.title}}
 										</div>
 										<div class="panel-body">
-											<canvas class="chart-base" chart-type="chart.type"
+											<jqcloud ng-if="chart.category == 'wordCloud'" auto-resize="true" words="chart.cloud" width="500" height="280" delay="10" steps="6">
+											</jqcloud>
+											<canvas ng-if="chart.category != 'wordCloud'" class="chart-base" chart-type="chart.type"
 												chart-data="chart.data" chart-labels="chart.labels" 
 												chart-series="chart.series" chart-legend="true" chart-options="{animation: false}">
 											</canvas>
+											
 										</div>
 									</div>
 								</div>
@@ -175,7 +177,12 @@
 						<div class="row">
 							<div ng-class="groups.length <= 1 ? 'col-md-12' : 'col-md-8'">
 								<div id="filter-box" class="input-group filter-box">
-									<span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <span ng-show="listLoaded" class="badge">{{ (data | filter: filters.listFilter).length}}</span> <span id="content-desc" style="margin-left: 5px"> <span ng-hide="listLoaded"> {{getString("loading")}}</span><span ng-show="listLoaded"> <b> {{header}}</b></span> </span></span>
+									<span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <!--<span ng-show="listLoaded" class="badge">{{ (data | filter: filters.listFilter).length}}</span> -->
+										<span id="content-desc" style="margin-left: 5px">
+											<span ng-hide="listLoaded"> {{getString("loading")}}</span>
+											<span ng-show="listLoaded"> <b> {{header}}</b></span>
+										</span>
+									</span>
 									<input type="text" id="filter" class="form-control" ng-model="filters.listFilter" value=""/>
 									<span class="input-group-addon"> <i class="fa fa-search"></i> </span>
 								</div>
