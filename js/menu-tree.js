@@ -109,7 +109,7 @@ myApp.constant("menuTree", {
             orientations: {
                 icon: "fa-users",
                 query: {
-                    sparql: "select distinct ?aluno as ?title ?t as ?desc ?tese as ?queryValue where { ?tese cin:title ?t . ?tese cin:student ?aluno . ?tese cin:year ?year . ?tese cin:idProfessor ?prof . ?prof cin:email '%%%' } order by ?year",
+                    sparql: "select distinct ?aluno as ?title ?t as ?desc ?tese as ?queryValue ?tType as ?group where { ?tese rdf:type ?tType . ?tese cin:title ?t . ?tese cin:student ?aluno . ?tese cin:year ?year . ?tese cin:idProfessor ?prof . ?prof cin:email '%%%' } order by ?year",
                     results: {
                         clickable: true,
                         menuMatch: "thesis"
