@@ -184,7 +184,7 @@ myApp.controller("ListCtrl",
 						
 						
 						if(++count < menuTreeCharts.length){
-							$scope.generateEachChart(count, menuTreeCharts);
+							$scope.generateEachChart(count, menuTreeCharts, queryValue);
 						}else{
 							$scope.$apply();
 						}

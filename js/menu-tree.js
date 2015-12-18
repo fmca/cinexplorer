@@ -24,7 +24,7 @@ myApp.constant("menuTree", {
                 sparql: "select ?teacher as ?title ?email as ?desc ?email as ?queryValue  where {?x rdf:type cin:academic . ?x cin:name ?teacher . ?x cin:email ?email} group by ?teacher order by ?teacher",
                 results: {
                     clickable: true,
-                    menuMatch: "profile",
+                    menuMatch :"profile"
                 }
             },
 			charts: [
@@ -56,7 +56,13 @@ myApp.constant("menuTree", {
                 },
 				charts: [
 					{
+						id: "wordCloudCoAuthors",
+						category: "wordCloud",
+						sparql: "select ?coName as ?x count(?coauthor) as ?y where { ?prof cin:email '%%%' . ?pub cin:author ?prof . ?pub cin:author ?coauthor . ?coauthor cin:name ?coName . FILTER(?coauthor != ?prof)} group by ?coName "
+					},
+					{
 						id: "chartPublicationsPerAcademic",
+						category: "graph",
 						type: "Line",
 						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . ?public cin:idProfessor ?id . ?id cin:email '%%%' . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 					}
@@ -64,7 +70,7 @@ myApp.constant("menuTree", {
                 publication: {
                     icon: "fa-file-text-o",
                     query: {
-                        sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where { <%%%> ?prop ?val FILTER isLiteral(?val)}",
+                        sparql: "select distinct str(?prop) as ?title str(?val) as ?desc ?val as ?queryValue where { <%%%> ?prop ?val FILTER isLiteral(?val) . FILTER (?prop != cin:author) }",
 
                         results: {
                             clickable: false,
@@ -72,8 +78,18 @@ myApp.constant("menuTree", {
                         }
 
                     }
-
-                }
+                },
+				cinAuthors: {
+						icon: "fa-user",
+						query: {
+							sparql: "select distinct ?name as ?title  ?email as ?desc ?email as ?queryValue where { <%%%> cin:author ?author . ?author cin:name ?name . ?author cin:email ?email} order by ?name",
+							
+							results: {
+								clickable: true,
+								menuMatch: "profile"
+							}
+						}
+					}
 
             },
             newsPerAcademic: {

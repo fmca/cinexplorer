@@ -63,6 +63,10 @@ myApp.constant("strings", {
         en_US: "Publication",
         pt_BR: "Publicação"
     },
+	cinAuthors:{
+		en_US: "Authors (CIn) ",
+		pt_BR: "Autores (CIn)"
+	},
 	newsPerAcademic: {
         en_US: "News",
         pt_BR: "Notícias"
@@ -111,9 +115,17 @@ myApp.constant("strings", {
 		en_US: "Orientations x Year",
 		pt_BR: "Orientações x Ano"
 	},
+	chartPublicationsPerAcademic: {
+		en_US: "Publications x Year",
+		pt_BR: "Publicações x Ano"
+	},
 	wordCloudExpertiseAreas: {
 		en_US: "Expertise Areas",
 		pt_BR: "Áreas de Atuação"
+	},
+	wordCloudCoAuthors: {
+		en_US: "Cooperation",
+		pt_BR: "Colaboração"
 	},
 	about:{
 		en_US: "About",
