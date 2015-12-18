@@ -149,7 +149,8 @@ myApp.controller("ListCtrl",
 									series.push(removeNamespace(results[i].cat))
 								}
 							}
-							if(series.length > 1){
+							
+							if(series.length > 0){
 								for(var i=0; i<series.length; i++){
 									data.push([]);
 									for(k=0; k<labels.length; k++){
@@ -159,7 +160,7 @@ myApp.controller("ListCtrl",
 							}
 							
 							for(var i=0; i<results.length; i++){
-								var pushIndex = series.length > 1 ? data[series.indexOf(removeNamespace(results[i].cat))] : data;
+								var pushIndex = series.length > 0 ? data[series.indexOf(removeNamespace(results[i].cat))] : data;
 								pushIndex[labels.indexOf(removeNamespace(results[i].x))] = removeNamespace(results[i].y);
 							}
 							$scope.charts.push({title: title, category: category, type: type, labels: labels, series: series, data: data});
