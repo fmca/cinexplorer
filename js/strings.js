@@ -131,6 +131,14 @@ myApp.constant("strings", {
 		en_US: "About",
 		pt_BR: "Sobre"
 	},
+	contact:{
+		en_US: "Contact",
+		pt_BR: "Contato"
+	},
+	back:{
+		en_US: "Back",
+		pt_BR: "Voltar"
+	},
 	contributors:{
 		en_US: "Contributors",
 		pt_BR: "Contribuidores"

@@ -44,9 +44,38 @@
 
         </div>
         <div ng-controller="MenuCtrl">
-
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+		
+		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
                 <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+						<a class="navbar-brand" href="#">OpenCIn</a>
+						
+                    </div>
+					
+					<p class="navbar-text"> {{header}}</p>
+					
+                    <!-- /.navbar-collapse -->
+					<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown" style="float: right; display: block;">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{lang.abbreviation}} <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li ng-repeat="language in languages"><a href="#" ng-click="changeLanguage(language.abbreviation)">{{language.title}}</a>
+                                    </li>
+                                </ul>
+                            </li>
+					</ul>
+
+                </div>
+                <!-- /.container-fluid -->
+            </nav>
+
+		<div class="row">
+		  <div class="col-sm-1 col-xs-1"> </div>
+		  <div class="col-sm-2">
+			<div class="sidebar-nav">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid" style="padding: 0px;">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
 
@@ -55,21 +84,14 @@
 
                     <!-- Collect the nav links, forms, and other content for toggling -->
                         <ul class="nav navbar-nav" style="width:100%;">
-							<li>
-								<button type="button" class="btn btn-primary navbar-brand" aria-label="Left Align" ng-click="back()" ng-show="currentMenuStack.length > 1">
+							<li style="width:100%">
+								<a href="#" ng-click="back()" ng-show="currentMenuStack.length > 1">
 									<span class="fa fa-chevron-left" aria-hidden="true"></span>
+									<span class="hidden-xs">{{getString("back")}}</span>
 									<!-- <a class="" href="#" ng-click="reload()">{{header}}</a> -->
-								</button>
+								</a>
 							</li>
-                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="menuClick(item.queryValue, item.name)"><a href=""><i class="fa {{item.icon}}"></i> <span class="hidden-xs">{{item.title}}</span></a>
-                            </li>
-							
-							 <li class="dropdown" style="float: right; display: block;">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{lang.abbreviation}} <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li ng-repeat="language in languages"><a href="#" ng-click="changeLanguage(language.abbreviation)">{{language.title}}</a>
-                                    </li>
-                                </ul>
+                            <li ng-repeat="item in currentMenu" ng-class="{active: item.name == selected.name}" ng-click="menuClick(item.queryValue, item.name)" style="width:100%"><a href=""><i class="fa {{item.icon}}"></i> <span class="hidden-xs">{{item.title}}</span></a>
                             </li>
                         </ul>
                     <!-- /.navbar-collapse -->
@@ -78,8 +100,10 @@
                 </div>
                 <!-- /.container-fluid -->
             </nav>
-
-			<div class="col-sm-1 col-xs-1"> </div>
+			</div>
+		  </div>
+		  <div class="col-sm-8">
+			
 			<div class="col-sm-10 col-xs-10">
 			
 			
@@ -95,7 +119,7 @@
 
 			<div class="row"  ng-show="selected.name == 'intro'">
 				<div class="panel panel-primary">
-					<div class="panel-heading hero"><h3>OpenCIn</h3></div>
+					<div class="panel-heading hero"><h3>{{getString("about")}}</h3></div>
 					<div class="panel-body">
 						<p ng-bind-html="getString('opencin_text') | toHtml"></p>
 						<p>
@@ -112,7 +136,7 @@
 					</script>
 				</div>
 				<div class="panel panel-default">
-					<div class="panel-heading hero" data-toggle="collapse" data-target="#cont-body"><a href="#"  style="text-decoration: none;"> <h4><span class="fa fa-chevron-down pull-left"></span>{{getString("about")}}</h4> </a></div>
+					<div class="panel-heading hero" data-toggle="collapse" data-target="#cont-body"><a href="#"  style="text-decoration: none;"> <h4><span class="fa fa-chevron-down pull-left"></span>{{getString("contact")}}</h4> </a></div>
 					<div id="cont-body" class="panel-body collapse">
 						<h4>{{getString("contributors")}}</h4>
 						<br>
@@ -180,7 +204,6 @@
 									<span class="input-group-addon"> <i ng-hide="listLoaded" class="results fa fa-refresh fa-spin"></i> <!--<span ng-show="listLoaded" class="badge">{{ (data | filter: filters.listFilter).length}}</span> -->
 										<span id="content-desc" style="margin-left: 5px">
 											<span ng-hide="listLoaded"> {{getString("loading")}}</span>
-											<span ng-show="listLoaded"> <b> {{header}}</b></span>
 										</span>
 									</span>
 									<input type="text" id="filter" class="form-control" ng-model="filters.listFilter" value=""/>
@@ -220,9 +243,15 @@
 
             </div>
 			</div>
-			<div class="col-sm-1 col-xs-1"> </div>
+			
 
         </div>
+		
+		<div class="col-sm-1 col-xs-1"> </div>
+		  </div>
+		</div>
+
+			
     </body>
 
 </html>
