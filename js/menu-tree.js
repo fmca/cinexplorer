@@ -167,10 +167,10 @@ myApp.constant("menuTree", {
             projectsPerAcademic: {
                 icon: "fa-gears",
                 query: {
-                    sparql: "",
+                    sparql: "select distinct ?name as ?desc ?name as ?queryValue where {?x cin:email '%%%' . ?x rdf:type cin:academic . ?y rdf:type cin:cooperationproject . ?y  cin:coordinator ?x . ?y cin:name ?name} order by ?desc",
                     results: {
-                        clickable: false,
-                        menuMatch: "none"
+                        clickable: true,
+                        menuMatch: "descProjectsCooperation"
                     }
                 }
             },
@@ -219,16 +219,66 @@ myApp.constant("menuTree", {
             }
 
         },
-		projects: {
-			icon: "fa-gears",
+		projectsInovation: {
+			icon: "fa-lightbulb-o ",
                 query: {
-                    sparql: "",
+                    sparql: "select distinct ?name as ?desc ?name as ?queryValue where {?x rdf:type cin:graduationproject . ?x cin:name ?name} order by ?name",
                     results: {
                         clickable: true,
+                        menuMatch: "descProjectsInovation"
+                    }
+                },
+            descProjectsInovation: {
+                icon: "fa-info",
+                query: {
+                    sparql: "select distinct ?title ?desc ?name as ?queryValue where { ?x rdf:type cin:graduationproject . ?x cin:desc ?descricao  . ?x cin:name '%%%' . ?x cin:name ?name .  ?x ?title ?desc .{?x cin:name ?desc} UNION {?x cin:desc ?desc} UNION {?x cin:term ?desc} UNION { ?x cin:link ?desc}} order by ?name",
+                    results: {
+                        clickable: false,
                         menuMatch: "none"
                     }
                 }
+            }
 		},
+        projectsCooperation: {
+            icon: "fa-gears",
+                query: {
+                    sparql: "select distinct ?name as ?desc ?name as ?queryValue where {?x rdf:type cin:cooperationproject . ?x cin:name ?name} order by ?name",
+                    results: {
+                        clickable: true,
+                        menuMatch: "descProjectsCooperation"
+                    }
+                },
+            descProjectsCooperation: {
+                icon: "fa-info",
+                query: {
+                    sparql: "select distinct ?title ?desc ?name as ?queryValue where { ?x rdf:type cin:cooperationproject  . ?x cin:name '%%%' . ?x cin:name ?name .  ?x ?title ?desc .{?x cin:name ?desc} UNION {?x cin:beginDate ?desc} UNION { ?x cin:endDate ?desc} } order by ?name",
+                    results: {
+                        clickable: false,
+                        menuMatch: "none"
+                    }
+                }
+            },
+                companyProject: {
+                   icon: "fa-briefcase ",
+                query: {
+                    sparql: "select distinct ?name as ?title ?cnpj as ?desc ?cnpj as ?queryValue where { ?y rdf:type cin:company . ?x rdf:type cin:cooperationproject . ?x cin:partner ?y . ?y cin:companyName ?name . ?x cin:name '%%%' . ?y cin:cnpj ?cnpj } order by ?name",
+                    results: {
+                        clickable: false,
+                        menuMatch: "none"
+                    }  
+                }
+            },
+            teacherProject: {
+                   icon: "fa-users",
+                query: {
+                    sparql: "select distinct ?name as ?title ?email as ?desc ?email as ?queryValue where { ?x rdf:type cin:academic . ?x cin:name ?nome . ?y rdf:type cin:cooperationproject . ?y cin:coordinator ?x . ?x cin:name ?name . ?y cin:name '%%%'. ?x cin:email ?email} order by ?name",
+                    results: {
+                        clickable: true,
+                        menuMatch: "profile"
+                    }  
+                }
+            } 
+        },
 		news:{
 			icon: "fa-newspaper-o",
 			query: {
@@ -260,12 +310,24 @@ myApp.constant("menuTree", {
 						type: "Line",
 						sparql: "select count(distinct ?public) as ?y ?issued as ?x ?type as ?cat where { ?public rdf:type ?type . ?public cin:title ?name .?public cin:issued ?issued . FILTER (xsd:integer(?issued) > 1999)} group by ?type ?issued order by ?issued"
 				},
+                {
+                    id: "chartPublicationTypes",
+                    category: "graph",
+                    type: "Doughnut",
+                    sparql: "select count(distinct ?public) as ?y ?type as ?x where { ?public rdf:type ?type . ?public cin:title ?name . ?public cin:issued ?issued } group by ?type"
+                },
 				{
 					id: "chartExpertiseAreas",
 					category: "graph",
 					type: "Pie",
 					sparql: "select ?area as ?x count(distinct ?siape) as ?y where { ?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area . ?x cin:siape ?siape } order by ?y"
 				},
+                {
+                    id: "chartExpertiseAreasPublication",
+                    category: "graph",
+                    type: "Doughnut",
+                    sparql: "select ?area as ?x count(distinct ?public) as ?y where { ?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?area . ?x cin:siape ?siape . ?public cin:idProfessor ?x } order by ?y"
+                },
 				{
 					id: "chartOrientationTypes",
 					category: "graph",
