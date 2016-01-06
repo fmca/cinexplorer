@@ -219,6 +219,37 @@ myApp.constant("menuTree", {
             }
 
         },
+        course: {
+            icon: "fa-lightbulb-o ",
+                query: {
+                    sparql: "select ?name as ?desc ?name as ?queryValue  where {?x rdf:type cin:course . ?x cin:name ?name } group by ?name order by ?name",
+                    results: {
+                        clickable: true,
+                        menuMatch: "discipline"
+                    }
+                },
+            discipline: {
+                icon: "fa-lightbulb-o ",
+                    query: {
+                        sparql: "select distinct ?code as ?title ?discipline as ?desc ?ementa as ?queryValue where {?x rdf:type cin:discipline . ?x cin:name ?discipline . ?x cin:code ?code . ?y rdf:type cin:course . ?x cin:idcourse ?y . ?y cin:name '%%%' . ?x cin:ementa ?ementa} group by ?code order by ?code",
+                        results: {
+                            clickable: true,
+                            menuMatch: "descDiscipline"
+                        },
+                        descDiscipline: {
+                            icon: "fa-info",
+                            query: {
+                                sparql: "select distinct ?title ?desc ?name as ?queryValue where { ?x rdf:type cin:discipline . ?x cin:code ?code . ?x cin:name ?name . ?x cin:ementa '%%%' .  ?x ?title ?desc .{?x cin:name ?name} UNION {?x cin:code ?desc} UNION {?x cin:ementa ?desc} UNION {?x cin:workload ?desc} UNION { ?x cin:idcourse ?desc}} group by ?name order by ?name ",
+                                results: {
+                                    clickable: false,
+                                    menuMatch: "none"
+                                }
+                            }
+                        }
+                    }
+            }
+
+        },
 		projectsInovation: {
 			icon: "fa-lightbulb-o ",
                 query: {

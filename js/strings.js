@@ -39,6 +39,18 @@ myApp.constant("strings", {
         en_US: "Publications",
         pt_BR: "Publicações"
     },
+    course: {
+        en_US: "Courses",
+        pt_BR: "Cursos"
+    },
+    discipline: {
+        en_US: "Discipline",
+        pt_BR: "Disciplina"
+    },
+    descDiscipline: {
+        en_US: "Discipline Infomations",
+        pt_BR: "Informação da Disciplina"
+    },
     projectsInovation: {
         en_US: "Projects Inovation",
         pt_BR: "Projetos de Inovação"
