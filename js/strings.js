@@ -39,9 +39,29 @@ myApp.constant("strings", {
         en_US: "Publications",
         pt_BR: "Publicações"
     },
-    projects: {
-        en_US: "Projects",
-        pt_BR: "Projetos"
+    projectsInovation: {
+        en_US: "Projects Inovation",
+        pt_BR: "Projetos de Inovação"
+    },
+    descProjectsInovation: {
+        en_US: "Projects Information",
+        pt_BR: "Informação do Projeto"
+    },
+    projectsCooperation: {
+        en_US: "Projects Cooperation",
+        pt_BR: "Projetos de Cooperação"
+    },
+    descProjectsCooperation: {
+        en_US: "Projects Information",
+        pt_BR: "Informação do Projeto"
+    },
+    companyProject: {
+        en_US: "Company",
+        pt_BR: "Empresa"
+    },
+    teacherProject: {
+        en_US: "Coordinator",
+        pt_BR: "Coordenador"
     },
     projectsPerAcademic: {
         en_US: "Projects",
@@ -103,10 +123,18 @@ myApp.constant("strings", {
 		en_US: "Publications x Year x Type",
         pt_BR: "Publicações x Ano x Tipo"
 	},
+    chartPublicationTypes: {
+        en_US: "Publications x Type",
+        pt_BR: "Publicações x Tipo"
+    },
 	chartExpertiseAreas: {
 		en_US: "Teacher x Expertise Area",
 		pt_BR: "Professores x Área de Atuação"
 	},
+    chartExpertiseAreasPublication: {
+        en_US: "Publication x Expertise Area",
+        pt_BR: "Publicações x Área de Atuação"
+    },
 	chartOrientationTypes: {
 		en_US: "Orientations x Type",
 		pt_BR: "Orientações x Tipo"
