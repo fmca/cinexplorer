@@ -44,12 +44,16 @@ myApp.constant("strings", {
         pt_BR: "Cursos"
     },
     discipline: {
-        en_US: "Discipline",
-        pt_BR: "Disciplina"
+        en_US: " Disciplines",
+        pt_BR: " Disciplinas"
     },
     descDiscipline: {
         en_US: "Discipline Infomations",
         pt_BR: "Informação da Disciplina"
+    },
+    prerequisite: {
+        en_US: "Pre-Requisites",
+        pt_BR: "Pre-Requisitos"
     },
     projectsInovation: {
         en_US: "Projects Inovation",
@@ -58,6 +62,10 @@ myApp.constant("strings", {
     descProjectsInovation: {
         en_US: "Projects Information",
         pt_BR: "Informação do Projeto"
+    },
+    studentProject: {
+        en_US: "Manager Project",
+        pt_BR: "Gerente de Projeto"
     },
     projectsCooperation: {
         en_US: "Projects Cooperation",
@@ -159,6 +167,10 @@ myApp.constant("strings", {
 		en_US: "Publications x Year",
 		pt_BR: "Publicações x Ano"
 	},
+    chartDisciplineForCourse: {
+        en_US: "Discipline x Course",
+        pt_BR: "Disciplinas Obrigatórias x Curso"
+    },
 	wordCloudExpertiseAreas: {
 		en_US: "Expertise Areas",
 		pt_BR: "Áreas de Atuação"

@@ -186,7 +186,7 @@ myApp.constant("menuTree", {
             }*/
         },
         expertiseAreas: {
-            icon: "fa-graduation-cap",
+            icon: "fa-suitcase",
             query: {
                 sparql: "select ?eaname as ?desc ?ea as ?queryValue where {?x rdf:type cin:academic . ?x cin:hasAreaExpertise ?ea . ?ea cin:name ?eaname} group by ?ea order by ?desc",
                 results: {
@@ -220,7 +220,7 @@ myApp.constant("menuTree", {
 
         },
         course: {
-            icon: "fa-lightbulb-o ",
+            icon: "fa-graduation-cap",
                 query: {
                     sparql: "select ?name as ?desc ?name as ?queryValue  where {?x rdf:type cin:course . ?x cin:name ?name } group by ?name order by ?name",
                     results: {
@@ -229,26 +229,35 @@ myApp.constant("menuTree", {
                     }
                 },
             discipline: {
-                icon: "fa-lightbulb-o ",
+                icon: "fa-book",
                     query: {
-                        sparql: "select distinct ?code as ?title ?discipline as ?desc ?ementa as ?queryValue where {?x rdf:type cin:discipline . ?x cin:name ?discipline . ?x cin:code ?code . ?y rdf:type cin:course . ?x cin:idcourse ?y . ?y cin:name '%%%' . ?x cin:ementa ?ementa} group by ?code order by ?code",
+                        sparql: "select distinct ?discipline as ?desc ?ementa as ?queryValue where {?x rdf:type cin:discipline . ?x cin:name ?discipline . ?x cin:code ?code . ?x cin:ementa ?ementa . ?y rdf:type cin:course . ?x cin:idcourse ?y . ?y cin:name '%%%' } group by ?discipline order by ?discipline",
                         results: {
                             clickable: true,
                             menuMatch: "descDiscipline"
-                        },
-                        descDiscipline: {
-                            icon: "fa-info",
-                            query: {
-                                sparql: "select distinct ?title ?desc ?name as ?queryValue where { ?x rdf:type cin:discipline . ?x cin:code ?code . ?x cin:name ?name . ?x cin:ementa '%%%' .  ?x ?title ?desc .{?x cin:name ?name} UNION {?x cin:code ?desc} UNION {?x cin:ementa ?desc} UNION {?x cin:workload ?desc} UNION { ?x cin:idcourse ?desc}} group by ?name order by ?name ",
-                                results: {
-                                    clickable: false,
-                                    menuMatch: "none"
-                                }
-                            }
+                        }
+                    },
+                descDiscipline: {
+                    icon: "fa-info",
+                    query: {
+                        sparql: "select distinct ?title ?desc ?code as ?queryValue where { ?x rdf:type cin:discipline . ?x cin:name ?name . ?x cin:code ?code  . ?x cin:ementa '%%%' .  ?x ?title ?desc . { ?x cin:name ?desc } UNION {?x cin:code ?desc} UNION {?x cin:ementa ?desc} UNION {?x cin:workload ?desc} UNION {?x cin:type ?desc} } group by ?name order by ?name ",
+                        results: {
+                            clickable: false,
+                            menuMatch: "none"
                         }
                     }
+                }, 
+                prerequisite: {
+                    icon: "fa-check-circle ",
+                    query: {
+                        sparql: "select distinct ?name as ?desc ?ementa as ?queryValue where { ?x rdf:type cin:discipline . ?x cin:ementa '%%%' . ?y rdf:type cin:discipline . ?x cin:prerequisito ?y . ?y cin:name ?name . ?y cin:code ?code . ?y cin:ementa ?ementa } group by ?name order by ?name",
+                        results: {
+                            clickable: true,
+                            menuMatch: "descDiscipline"
+                        }
+                    }
+                }                  
             }
-
         },
 		projectsInovation: {
 			icon: "fa-lightbulb-o ",
@@ -267,6 +276,16 @@ myApp.constant("menuTree", {
                         clickable: false,
                         menuMatch: "none"
                     }
+                }
+            },
+            studentProject: {
+                   icon: "fa-briefcase ",
+                query: {
+                    sparql: "select distinct ?name as ?title ?email as ?desc ?email as ?queryValue where { ?y rdf:type cin:student . ?x rdf:type cin:graduationproject . ?x cin:name '%%%' . ?x cin:managerProject ?y . ?y cin:name ?name . ?y cin:email ?email } order by ?name",
+                    results: {
+                        clickable: false,
+                        menuMatch: "none"
+                    }  
                 }
             }
 		},
@@ -370,7 +389,13 @@ myApp.constant("menuTree", {
 					category: "graph",
 					type: "Line",
 					sparql: "select count(distinct ?tese) as ?y ?year as ?x ?type as ?cat where { ?tese cin:student ?aluno . ?tese rdf:type ?type . ?tese cin:year ?year . FILTER (xsd:integer(?year) > 1999)} group by ?year ?type order by ?year"
-				}
+				},
+                {
+                    id: "chartDisciplineForCourse",
+                    category: "graph",
+                    type: "Pie",
+                    sparql: "select count(distinct ?discipline) as ?y ?course as ?x where { ?x rdf:type cin:discipline . ?x cin:name ?discipline . ?y rdf:type cin:course . ?y cin:name ?course . ?x cin:idcourse ?y . ?x cin:type 'OBRIGATÓRIA'} group by ?course"
+                }
 				
 			]
 		}
